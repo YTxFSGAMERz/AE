@@ -1,0 +1,37 @@
+Report created: 
+	2/21/2022	11:20:57 PM
+
+Project name: particle images.aep
+
+Source files collected to: 
+	F:\MINHAJ CLasses\OPEN CLASSES\1. Final Course Structure\Skillsiya MG\After effects motion graphics\Adobe After Effects\24. Experimenting particles\particle flower
+
+Source files collected: All
+
+Collected comps:  
+	Comp 1
+	leaf precomp
+	assignmnet1
+	Comp 2
+	
+Number of collected files:  3
+
+Size of collected files:  4.9 MB
+
+Collected source files: 
+	F:\MINHAJ CLasses\OPEN CLASSES\1. Final Course Structure\Adobe after effects\references\project files\purepng.com-green-leavesleaffoliageautumn-foliagephotosynthetic-function-1411527057304jyn0j.png
+	F:\MINHAJ CLasses\OPEN CLASSES\1. Final Course Structure\Adobe after effects\references\project files\rs930_135120665-low_1.jpg
+	F:\MINHAJ CLasses\OPEN CLASSES\1. Final Course Structure\Adobe after effects\references\project files\Social-Media-Icons.jpg
+	
+Rendering plug-ins:
+	Classic 3D
+	
+Effects used:  3
+
+Effect:  CC Particle World
+	
+Effect:  Exposure
+	
+Effect:  Hue/Saturation
+	
+

@@ -1,0 +1,13 @@
+Fonts used in this design:
+
+Font: Exo
+Author: Natanael Gama
+Url: http://www.fontsquirrel.com/fonts/exo
+
+Font: Montserrat
+Author: Julieta Ulanovsky
+Url: http://www.fontsquirrel.com/fonts/montserrat
+
+Font: WC Mano Negra
+Author: WC Fonts
+Url: http://www.fontsquirrel.com/fonts/wc-mano-negra-bta
