@@ -1,0 +1,21 @@
+# Operating System Files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+[Dd]esktop.ini
+
+# After Effects Auto-Saves & Render Logs
+*.aep Logs/
+Adobe After Effects Auto-Save/
+*.tmp
+
+# IDE & Editor Caches
+.vs/
+*.user
+*.suo
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
