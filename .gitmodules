@@ -1,0 +1,6 @@
+[submodule "Motion Graphics/after-effects-scripting-guide"]
+	path = Motion Graphics/after-effects-scripting-guide
+	url = https://github.com/docsforadobe/after-effects-scripting-guide.git
+[submodule "Motion Graphics/CEP-Resources"]
+	path = Motion Graphics/CEP-Resources
+	url = https://github.com/Adobe-CEP/CEP-Resources.git
