@@ -1,0 +1,11 @@
+{
+  "name": "motion-graphics-pro",
+  "displayName": "Motion Graphics & After Effects Pro",
+  "version": "1.0.0",
+  "description": "Comprehensive motion graphics toolkit covering After Effects ExtendScript automation, C/C++ SDK plugins, CEP extensions, Remotion React video generation, VFX compositing, continuous editing learning, and professional interview coaching.",
+  "suggestedPrompts": [
+    "Write an ExtendScript JSX to procedurally generate a 2.5D parallax title scene with ease curves",
+    "Explain how to structure a SmartFX C++ plugin with 32-bpc float support in After Effects SDK",
+    "Simulate a Senior Motion Designer technical interview question on expressions and render pipelines"
+  ]
+}

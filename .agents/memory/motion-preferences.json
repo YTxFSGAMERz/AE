@@ -1,0 +1,40 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2026-11-11T00:55:00Z",
+  "timing": {
+    "defaultEaseInfluence": 80.0,
+    "defaultEaseSpeed": 0.0,
+    "springDamping": 200,
+    "springStiffness": 220,
+    "standardStaggerFrames": 4,
+    "minHoldSeconds": 3.0
+  },
+  "typography": {
+    "headlineFont": "SF Pro Display",
+    "bodyFont": "SF Pro Text",
+    "kickerTracking": 80,
+    "headlineTracking": -10,
+    "uppercaseKickers": true
+  },
+  "color": {
+    "canvasDefault": "#FBFBFD",
+    "primaryAccent": "#7C3AED",
+    "deepAccent": "#6D28D9",
+    "darkCanvas": "#09090B"
+  },
+  "audio": {
+    "sfxDensity": "balanced",
+    "peakCeilingDb": -6.0,
+    "favoriteWhoosh": "whooshLong"
+  },
+  "render": {
+    "masterCodec": "ProRes 4444",
+    "alphaMode": "straight",
+    "defaultFps": 30.0,
+    "defaultResolution": [
+      1920,
+      1080
+    ]
+  },
+  "learnedFeedbackLog": []
+}
