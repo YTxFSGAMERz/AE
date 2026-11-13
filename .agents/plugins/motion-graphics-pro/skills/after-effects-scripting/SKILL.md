@@ -238,3 +238,26 @@ function queueAndRender(comp, outputPath, outputModuleTemplate) {
 2. **Colors Range from 0.0 to 1.0**: ExtendScript colors are floats from `0.0` to `1.0`. Divide 8-bit RGB values (0–255) by `255.0`.
 3. **Motion Blur Hierarchy**: Enabling motion blur on an individual layer (`layer.motionBlur = true`) has no visible effect unless the parent composition also has it enabled (`comp.motionBlur = true`).
 4. **Time Values in Seconds**: All timeline properties take floating-point time values in **seconds**, not frames. To convert frame numbers to seconds: `var timeSec = frameNumber / comp.frameRate;`.
+
+---
+
+## 9. Antigravity AI Bridge Execution CLI
+
+The workspace includes an automated zero-install bridge to execute ExtendScript directly in the running After Effects session:
+
+```powershell
+# Query active project, comp, and layer hierarchy:
+python scripts/ae_bridge.py info
+
+# Evaluate arbitrary ExtendScript snippet:
+python scripts/ae_bridge.py eval "app.project.activeItem.name"
+
+# Run a JSX script file in AE:
+python scripts/ae_bridge.py run "path/to/script.jsx"
+
+# Capture a PNG frame snapshot for AI visual verification:
+python scripts/ae_bridge.py snapshot "preview.png" --time 2.5
+
+# Generate audio beat markers on the timeline:
+python scripts/audio_marker_sync.py "path/to/audio.mp3" --apply
+```

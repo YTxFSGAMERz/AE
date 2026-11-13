@@ -1,0 +1,234 @@
+// motion_primitives.jsxinc
+// Antigravity Motion Graphics & After Effects Creative Primitives
+// Conforms to After Effects ExtendScript (ECMAScript 3 DOM)
+
+(function(global) {
+    var MotionPrimitives = {};
+
+    // -------------------------------------------------------------------------
+    // 1. EASING PRESETS
+    // -------------------------------------------------------------------------
+    MotionPrimitives.EASING = {
+        SNAPPY: { speed: 0.0, influence: 85.0 },
+        CINEMATIC: { speed: 0.0, influence: 75.0 },
+        GENTLE: { speed: 0.0, influence: 55.0 },
+        OVERSHOOT: { speed: 0.0, influence: 88.0 }
+    };
+
+    MotionPrimitives.applyEase = function(prop, presetName) {
+        if (!prop || prop.numKeys < 1) return false;
+        var preset = MotionPrimitives.EASING[presetName] || MotionPrimitives.EASING.CINEMATIC;
+        var easeIn = new KeyframeEase(preset.speed, preset.influence);
+        var easeOut = new KeyframeEase(preset.speed, preset.influence);
+
+        for (var i = 1; i <= prop.numKeys; i++) {
+            if (prop.propertyValueType === PropertyValueType.TwoD_SPATIAL || 
+                prop.propertyValueType === PropertyValueType.ThreeD_SPATIAL) {
+                var dims = (prop.propertyValueType === PropertyValueType.TwoD_SPATIAL) ? 2 : 3;
+                var inArr = [], outArr = [];
+                for (var d = 0; d < dims; d++) {
+                    inArr.push(easeIn);
+                    outArr.push(easeOut);
+                }
+                prop.setTemporalEaseAtKey(i, inArr, outArr);
+            } else {
+                prop.setTemporalEaseAtKey(i, [easeIn], [easeOut]);
+            }
+        }
+        return true;
+    };
+
+    // -------------------------------------------------------------------------
+    // 2. RESPONSIVE LOWER-THIRD WITH sourceRectAtTime()
+    // -------------------------------------------------------------------------
+    MotionPrimitives.createResponsiveLowerThird = function(comp, options) {
+        options = options || {};
+        var primaryText = options.name || "Primary Headline";
+        var subText = options.title || "Secondary Subtitle";
+        var startTime = options.startTime || 0.0;
+        var duration = options.duration || 5.0;
+        var posX = options.x || 160;
+        var posY = options.y || comp.height - 180;
+        var primaryColor = options.primaryColor || [0.08, 0.58, 0.98]; // Vibrant Accent
+        var bgAlpha = options.bgAlpha || 0.85;
+
+        // 1. Background Shape Layer
+        var shapeLayer = comp.layers.addShape();
+        shapeLayer.name = "LowerThird_BG";
+        shapeLayer.startTime = startTime;
+        shapeLayer.outPoint = startTime + duration;
+
+        var shapeGroup = shapeLayer.property("ADBE Root Vectors Group").addProperty("ADBE Vector Group");
+        shapeGroup.name = "Box Group";
+        var rectPath = shapeGroup.property("ADBE Vectors Group").addProperty("ADBE Vector Shape - Rect");
+        var fill = shapeGroup.property("ADBE Vectors Group").addProperty("ADBE Vector Graphic - Fill");
+        fill.property("ADBE Vector Fill Color").setValue([0.05, 0.07, 0.1]); // Dark base
+        fill.property("ADBE Vector Fill Opacity").setValue(bgAlpha * 100);
+
+        // 2. Accent Bar
+        var accentGroup = shapeLayer.property("ADBE Root Vectors Group").addProperty("ADBE Vector Group");
+        accentGroup.name = "Accent Bar";
+        var accentRect = accentGroup.property("ADBE Vectors Group").addProperty("ADBE Vector Shape - Rect");
+        var accentFill = accentGroup.property("ADBE Vectors Group").addProperty("ADBE Vector Graphic - Fill");
+        accentFill.property("ADBE Vector Fill Color").setValue(primaryColor);
+
+        // 3. Primary Text
+        var textPrimary = comp.layers.addText(primaryText);
+        textPrimary.name = "LowerThird_Name";
+        textPrimary.startTime = startTime;
+        textPrimary.outPoint = startTime + duration;
+        var textPrimaryDoc = textPrimary.property("ADBE Text Properties").property("ADBE Text Document").value;
+        textPrimaryDoc.fontSize = options.nameFontSize || 42;
+        textPrimaryDoc.fillColor = [1, 1, 1];
+        textPrimaryDoc.applyFill = true;
+        textPrimaryDoc.justification = ParagraphJustification.LEFT_JUSTIFY;
+        textPrimary.property("ADBE Text Properties").property("ADBE Text Document").setValue(textPrimaryDoc);
+
+        // 4. Secondary Subtitle
+        var textSub = comp.layers.addText(subText);
+        textSub.name = "LowerThird_Title";
+        textSub.startTime = startTime;
+        textSub.outPoint = startTime + duration;
+        var textSubDoc = textSub.property("ADBE Text Properties").property("ADBE Text Document").value;
+        textSubDoc.fontSize = options.titleFontSize || 24;
+        textSubDoc.fillColor = [0.8, 0.85, 0.9];
+        textSubDoc.applyFill = true;
+        textSubDoc.justification = ParagraphJustification.LEFT_JUSTIFY;
+        textSub.property("ADBE Text Properties").property("ADBE Text Document").setValue(textSubDoc);
+
+        // Positions
+        textPrimary.property("ADBE Transform Group").property("ADBE Position").setValue([posX + 24, posY]);
+        textSub.property("ADBE Transform Group").property("ADBE Position").setValue([posX + 24, posY + 40]);
+
+        // Auto-sizing expression on Shape Layer Rect Size
+        rectPath.property("ADBE Vector Rect Size").expression = 
+            'var nameL = thisComp.layer("' + textPrimary.name + '");\n' +
+            'var titleL = thisComp.layer("' + textSub.name + '");\n' +
+            'var r1 = nameL.sourceRectAtTime(time, false);\n' +
+            'var r2 = titleL.sourceRectAtTime(time, false);\n' +
+            'var w = Math.max(r1.width, r2.width) + 48;\n' +
+            'var h = 96;\n' +
+            '[w, h];';
+
+        rectPath.property("ADBE Vector Rect Position").expression = 
+            'var s = content("Box Group").content("ADBE Vector Shape - Rect").size;\n' +
+            '[s[0] / 2, 0];';
+
+        shapeLayer.property("ADBE Transform Group").property("ADBE Position").setValue([posX, posY + 16]);
+
+        // Accent Bar sizing & position
+        accentRect.property("ADBE Vector Rect Size").setValue([6, 88]);
+        accentRect.property("ADBE Vector Rect Position").setValue([3, 0]);
+
+        // Entrance Animation with Snappy Ease
+        var shapePos = shapeLayer.property("ADBE Transform Group").property("ADBE Position");
+        shapePos.setValueAtTime(startTime, [posX - 40, posY + 16]);
+        shapePos.setValueAtTime(startTime + 0.4, [posX, posY + 16]);
+        MotionPrimitives.applyEase(shapePos, "SNAPPY");
+
+        var shapeOp = shapeLayer.property("ADBE Transform Group").property("ADBE Opacity");
+        shapeOp.setValueAtTime(startTime, 0);
+        shapeOp.setValueAtTime(startTime + 0.25, 100);
+        MotionPrimitives.applyEase(shapeOp, "GENTLE");
+
+        var pOp = textPrimary.property("ADBE Transform Group").property("ADBE Opacity");
+        pOp.setValueAtTime(startTime + 0.1, 0);
+        pOp.setValueAtTime(startTime + 0.35, 100);
+
+        var sOp = textSub.property("ADBE Transform Group").property("ADBE Opacity");
+        sOp.setValueAtTime(startTime + 0.18, 0);
+        sOp.setValueAtTime(startTime + 0.42, 100);
+
+        return {
+            bgLayer: shapeLayer.name,
+            nameLayer: textPrimary.name,
+            titleLayer: textSub.name
+        };
+    };
+
+    // -------------------------------------------------------------------------
+    // 3. KINETIC TEXT ANIMATOR
+    // -------------------------------------------------------------------------
+    MotionPrimitives.createKineticText = function(comp, options) {
+        options = options || {};
+        var textStr = options.text || "Kinetic Typography";
+        var startTime = options.startTime || 0.0;
+        var style = options.style || "typewriter"; // typewriter, pop, cascade
+        var fontSize = options.fontSize || 64;
+
+        var textLayer = comp.layers.addText(textStr);
+        textLayer.startTime = startTime;
+        var textDoc = textLayer.property("ADBE Text Properties").property("ADBE Text Document").value;
+        textDoc.fontSize = fontSize;
+        textDoc.fillColor = options.color || [1, 1, 1];
+        textDoc.applyFill = true;
+        textDoc.justification = ParagraphJustification.CENTER_JUSTIFY;
+        textLayer.property("ADBE Text Properties").property("ADBE Text Document").setValue(textDoc);
+        textLayer.property("ADBE Transform Group").property("ADBE Position").setValue([comp.width / 2, comp.height / 2]);
+
+        var animators = textLayer.property("ADBE Text Properties").property("ADBE Text Animators");
+        var animator = animators.addProperty("ADBE Text Animator");
+        animator.name = "Kinetic Animator";
+
+        var selector = animator.property("ADBE Text Selectors").addProperty("ADBE Text Selector");
+        var startProp = selector.property("ADBE Text Percent Start");
+        var endProp = selector.property("ADBE Text Percent End");
+
+        if (style === "typewriter") {
+            var charCount = textStr.length;
+            var animDuration = Math.min(2.5, charCount * 0.05);
+            endProp.setValueAtTime(startTime, 0);
+            endProp.setValueAtTime(startTime + animDuration, 100);
+            selector.property("ADBE Text Range Advanced").property("ADBE Text Range Units").setValue(1); // Percentage
+            // Hold / linear step
+            var props = animator.property("ADBE Text Animator Properties");
+            var opProp = props.addProperty("ADBE Text Opacity");
+            opProp.setValue(0);
+        } else {
+            // Cascade Slide Up + Fade
+            var props = animator.property("ADBE Text Animator Properties");
+            var posProp = props.addProperty("ADBE Text Position 3D");
+            posProp.setValue([0, 60, 0]);
+            var opProp = props.addProperty("ADBE Text Opacity");
+            opProp.setValue(0);
+
+            startProp.setValueAtTime(startTime, 0);
+            startProp.setValueAtTime(startTime + 0.6, 100);
+            MotionPrimitives.applyEase(startProp, "SNAPPY");
+        }
+
+        return textLayer.name;
+    };
+
+    // -------------------------------------------------------------------------
+    // 4. PRESET EFFECT STACKS
+    // -------------------------------------------------------------------------
+    MotionPrimitives.applyEffectStack = function(layer, stackType) {
+        if (!layer) return false;
+        var effects = layer.property("ADBE Effect Parade");
+        if (!effects) return false;
+
+        if (stackType === "neon_glow") {
+            var glow = effects.addProperty("ADBE Glow");
+            glow.property("ADBE Glow-0001").setValue(35.0); // Threshold
+            glow.property("ADBE Glow-0002").setValue(45.0); // Radius
+            glow.property("ADBE Glow-0003").setValue(1.6);  // Intensity
+
+            var glow2 = effects.addProperty("ADBE Glow");
+            glow2.property("ADBE Glow-0001").setValue(20.0);
+            glow2.property("ADBE Glow-0002").setValue(150.0);
+            glow2.property("ADBE Glow-0003").setValue(0.8);
+            return true;
+        }
+
+        if (stackType === "film_grain") {
+            var noise = effects.addProperty("ADBE Noise");
+            noise.property("ADBE Noise-0001").setValue(4.0); // Amount of noise %
+            return true;
+        }
+
+        return false;
+    };
+
+    global.MotionPrimitives = MotionPrimitives;
+})(this);

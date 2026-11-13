@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "after-effects": {
+      "command": "python",
+      "args": [
+        "c:\\Users\\Admin\\Documents\\GitHub\\AE\\scripts\\ae_mcp_server.py"
+      ]
+    }
+  }
+}
