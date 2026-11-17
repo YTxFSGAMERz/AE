@@ -29,6 +29,18 @@ ROOT_FOLDER_ID = "18jb20pW3S-KNLwWrvanW9UChR7b9WCg_"
 LOCAL_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 CACHE_FILE = os.path.join(LOCAL_ROOT, ".gdrive_sync_cache.json")
 
+# Ensure required binary directories are in PATH (critical for GitHub Desktop GUI execution)
+EXTRA_PATHS = [
+    os.path.expandvars(r"%USERPROFILE%\.gemini\antigravity\bin"),
+    r"C:\Python315",
+    r"C:\Python315\Scripts",
+]
+_curr_path = os.environ.get("PATH", "")
+for _p in EXTRA_PATHS:
+    if os.path.exists(_p) and _p not in _curr_path:
+        os.environ["PATH"] = f"{_p};{_curr_path}"
+        _curr_path = os.environ["PATH"]
+
 IGNORED_NAMES = {
     "node_modules",
     "__pycache__",
@@ -442,18 +454,27 @@ def install_hook():
 
     hook_content = """#!/bin/sh
 # Git Pre-Push Hook for Automatic Google Drive Sync (AE)
+# Compatible with both Terminal CLI and GitHub Desktop GUI
+
+export PATH="/c/Python315:/c/Python315/Scripts:/c/Users/Admin/.gemini/antigravity/bin:$PATH"
+
+PYTHON_EXEC="python"
+if [ -x "/c/Python315/python.exe" ]; then
+    PYTHON_EXEC="/c/Python315/python.exe"
+fi
+
 echo ""
 echo "================================================================="
-echo "🚀 [AE Auto-Sync] Triggered by git push..."
+echo "🚀 [AE Auto-Sync] Triggered by push (GitHub Desktop / CLI)..."
 echo "================================================================="
 
 # Execute fast delta sync
-python scripts/studio/gdrive_sync.py --on-push
+"$PYTHON_EXEC" scripts/studio/gdrive_sync.py --on-push
 
 if [ $? -eq 0 ]; then
     echo "✅ [AE Auto-Sync] Google Drive is fully synchronized."
 else
-    echo "⚠️ [AE Auto-Sync] Google Drive sync encountered warnings (git push continuing)."
+    echo "⚠️ [AE Auto-Sync] Google Drive sync completed with warnings."
 fi
 echo ""
 exit 0
