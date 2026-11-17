@@ -1,0 +1,4 @@
+1
+00:00:28,580 --> 00:00:29,980
+Next We'll finish the next
+

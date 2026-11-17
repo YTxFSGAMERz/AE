@@ -1,0 +1,27 @@
+{
+  "name": "ae-video-studio",
+  "version": "1.0.0",
+  "description": "Professional AI-Powered Video Editing Studio (Whisper, yt-dlp, HyperFrames, Remotion, FFmpeg)",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "status": "python studio.py status",
+    "doctor": "hyperframes doctor",
+    "remotion:studio": "remotion studio remotion/src/index.ts",
+    "remotion:render": "remotion render remotion/src/index.ts",
+    "remotion:compositions": "remotion compositions remotion/src/index.ts",
+    "motion:preview": "hyperframes preview",
+    "motion:render": "hyperframes render",
+    "motion:catalog": "hyperframes catalog"
+  },
+  "dependencies": {
+    "@remotion/cli": "^4.0.544",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "hyperframes": "^0.9.56",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "remotion": "^4.0.544",
+    "typescript": "^5.7.3"
+  }
+}

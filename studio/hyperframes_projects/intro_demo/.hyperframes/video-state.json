@@ -1,0 +1,54 @@
+{
+  "version": 1,
+  "historyId": "41b6167d-c01f-4f4d-989d-c180c44a99b4",
+  "currentRevision": null,
+  "pendingChanges": false,
+  "files": {
+    "AGENTS.md": {
+      "hash": "268ff46777938da818baa92a718571785e9acf2cef2d3ffbacbb93483dcba37a",
+      "content": "C:\\Users\\Admin\\.cache\\hyperframes\\history\\41b6167d-c01f-4f4d-989d-c180c44a99b4\\blobs\\26\\268ff46777938da818baa92a718571785e9acf2cef2d3ffbacbb93483dcba37a"
+    },
+    "CLAUDE.md": {
+      "hash": "268ff46777938da818baa92a718571785e9acf2cef2d3ffbacbb93483dcba37a",
+      "content": "C:\\Users\\Admin\\.cache\\hyperframes\\history\\41b6167d-c01f-4f4d-989d-c180c44a99b4\\blobs\\26\\268ff46777938da818baa92a718571785e9acf2cef2d3ffbacbb93483dcba37a"
+    },
+    "hyperframes.json": {
+      "hash": "53dbce1e19aa713cbb12ee0bc4d206143b45ab15e6ffbfcaa8f69572d4d24d50",
+      "content": "C:\\Users\\Admin\\.cache\\hyperframes\\history\\41b6167d-c01f-4f4d-989d-c180c44a99b4\\blobs\\53\\53dbce1e19aa713cbb12ee0bc4d206143b45ab15e6ffbfcaa8f69572d4d24d50"
+    },
+    "index.html": {
+      "hash": "bb26a8f483c4b8ed34f95e1a3fd8bd97e06440351dcb1c24c71d2abdbb1a1d15",
+      "content": "C:\\Users\\Admin\\.cache\\hyperframes\\history\\41b6167d-c01f-4f4d-989d-c180c44a99b4\\blobs\\bb\\bb26a8f483c4b8ed34f95e1a3fd8bd97e06440351dcb1c24c71d2abdbb1a1d15"
+    },
+    "meta.json": {
+      "hash": "4e061d63d70cdc3c5bed1924a99a8624630db2ffaa7d67cb1989a2cad151bab4",
+      "content": "C:\\Users\\Admin\\.cache\\hyperframes\\history\\41b6167d-c01f-4f4d-989d-c180c44a99b4\\blobs\\4e\\4e061d63d70cdc3c5bed1924a99a8624630db2ffaa7d67cb1989a2cad151bab4"
+    },
+    "package.json": {
+      "hash": "a2861bd02b1f758bcc9315d2386aa0a0605a0802c6da446ca73fe69321cf501d",
+      "content": "C:\\Users\\Admin\\.cache\\hyperframes\\history\\41b6167d-c01f-4f4d-989d-c180c44a99b4\\blobs\\a2\\a2861bd02b1f758bcc9315d2386aa0a0605a0802c6da446ca73fe69321cf501d"
+    }
+  },
+  "revisions": {},
+  "checks": {
+    "latest": null,
+    "revisions": {},
+    "unversioned": []
+  },
+  "snapshots": {
+    "latest": null,
+    "revisions": {},
+    "unversioned": []
+  },
+  "renders": {
+    "latest": {
+      "id": "61ab323f-fa5b-48b5-9931-289b7b220798",
+      "completedAt": 1794817447544,
+      "output": "C:\\Users\\Admin\\Documents\\GitHub\\AE\\studio\\hyperframes_projects\\intro_demo\\test_render.mp4",
+      "status": "completed",
+      "revision": null
+    },
+    "retainedRevisions": []
+  },
+  "pendingArtifactCleanup": []
+}

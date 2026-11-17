@@ -1,0 +1,59 @@
+{
+  "text": " Next We'll finish the next",
+  "segments": [
+    {
+      "id": 0,
+      "seek": 0,
+      "start": 28.580000000000002,
+      "end": 29.98,
+      "text": " Next We'll finish the next",
+      "tokens": [
+        50364,
+        3087,
+        492,
+        603,
+        2413,
+        264,
+        958,
+        51721
+      ],
+      "temperature": 1.0,
+      "avg_logprob": -4.460414038764106,
+      "compression_ratio": 0.7647058823529411,
+      "no_speech_prob": 0.40779736638069153,
+      "words": [
+        {
+          "word": " Next",
+          "start": 28.580000000000002,
+          "end": 29.98,
+          "probability": 4.080528378835879e-05
+        },
+        {
+          "word": " We'll",
+          "start": 29.98,
+          "end": 29.98,
+          "probability": 0.11213486106134951
+        },
+        {
+          "word": " finish",
+          "start": 29.98,
+          "end": 29.98,
+          "probability": 0.0012497154530137777
+        },
+        {
+          "word": " the",
+          "start": 29.98,
+          "end": 29.98,
+          "probability": 0.3153221309185028
+        },
+        {
+          "word": " next",
+          "start": 29.98,
+          "end": 29.98,
+          "probability": 0.015995634719729424
+        }
+      ]
+    }
+  ],
+  "language": "en"
+}
