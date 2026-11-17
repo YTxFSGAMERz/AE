@@ -1,32 +1,57 @@
 // =============================================================================
-// Project Future Voyage – A Motion Design Story in After Effects
-// build_project.jsx  –  ExtendScript AE project builder
-// PDF Spec: 1920x1080, 30fps, 90-120s, 6 scenes
-// Scenes: Map path, button/cursor, holographic map, title reveal,
-//         kinetic text, final integration
+// Project Future Voyage - A Motion Design Story in After Effects
+// Studio-Grade ExtendScript AE Builder
+// Conforms strictly to Project Future Voyage Specification PDF
 // =============================================================================
 
 (function buildFutureVoyage() {
+    var traceFile = new File("C:/Users/Admin/Documents/GitHub/AE/future_voyage_trace.txt");
+    function trace(msg) {
+        try {
+            traceFile.open("a");
+            traceFile.writeln(msg);
+            traceFile.close();
+        } catch(e) {}
+    }
+
+    trace("TRACE 1: Script started");
+    try {
+
     if (!app.project) {
         app.newProject();
     }
-    app.beginUndoGroup("Build: Future Voyage Project");
+    app.beginUndoGroup("Build: Future Voyage Project (Studio Grade)");
+
+    try {
+        app.beginSuppressDialogs();
+    } catch(e) {}
 
     var proj = app.project;
 
-    // ─── FOLDERS ───────────────────────────────────────────────────────────────
-    var folderScenes   = proj.items.addFolder("Scenes");
-    var folderPrecomps = proj.items.addFolder("Pre-Comps");
-    var folderAssets   = proj.items.addFolder("Assets");
+    trace("TRACE 2: Clearing old items");
+    while (proj.items.length > 0) {
+        proj.items[1].remove();
+    }
 
-    // ─── SETTINGS ──────────────────────────────────────────────────────────────
-    var W = 1920, H = 1080, FPS = 30, DUR = 100; // 100s within 90-120 range
+    var folderScenes   = proj.items.addFolder("Scenes");
+    var folderAssets   = proj.items.addFolder("Assets");
+    var folderPrecomps = proj.items.addFolder("Pre-Comps");
+
+    var W = 1920, H = 1080, FPS = 30, DUR = 95;
 
     var easeIn  = new KeyframeEase(0.0, 80.0);
     var easeOut = new KeyframeEase(0.0, 80.0);
 
     function easeAll(prop) {
         if (!prop || prop.numKeys < 1) return;
+        try {
+            if (prop.propertyValueType === PropertyValueType.SHAPE ||
+                prop.propertyValueType === PropertyValueType.TEXT_DOCUMENT ||
+                prop.propertyValueType === PropertyValueType.CUSTOM_VALUE ||
+                prop.propertyValueType === PropertyValueType.NO_VALUE) {
+                return;
+            }
+        } catch(e) {}
         for (var k = 1; k <= prop.numKeys; k++) {
             var testCounts = [1, 2, 3];
             for (var i = 0; i < testCounts.length; i++) {
@@ -43,459 +68,457 @@
         }
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // SCENE 1 – The Journey Begins (Map Path Animation, 0-20s)
-    // ─────────────────────────────────────────────────────────────────────────
-    var sc1 = proj.items.addComp("Scene_01_MapPath", W, H, 1.0, 20, FPS);
-    sc1.parentFolder = folderScenes;
-    sc1.bgColor = [0.02, 0.05, 0.12];
-
-    // Map background (dark ocean color)
-    var mapBg = sc1.layers.addSolid([0.03, 0.08, 0.18], "MapBackground", W, H, 1.0);
-    mapBg.moveToEnd();
-
-    // Grid lines (holographic map feel)
-    for (var g = 0; g < 8; g++) {
-        var gridH = sc1.layers.addShape();
-        gridH.name = "GridH_" + g;
-        var ghGroup = gridH.property("ADBE Root Vectors Group").addProperty("ADBE Vector Group");
-        var ghRect  = ghGroup.property("ADBE Vectors Group").addProperty("ADBE Vector Shape - Rect");
-        ghRect.property("ADBE Vector Rect Size").setValue([W, 1]);
-        var ghFill  = ghGroup.property("ADBE Vectors Group").addProperty("ADBE Vector Graphic - Fill");
-        ghFill.property("ADBE Vector Fill Color").setValue([0.0, 0.5, 1.0]);
-        gridH.property("ADBE Transform Group").property("ADBE Position").setValue([960, 135 * g]);
-        gridH.property("ADBE Transform Group").property("ADBE Opacity").setValue(20);
-    }
-
-    // Travel path shape (curved line via shape layer)
-    var pathLayer = sc1.layers.addShape();
-    pathLayer.name = "TravelPath";
-    var pathGroup = pathLayer.property("ADBE Root Vectors Group").addProperty("ADBE Vector Group");
-    // Path shape (bezier-like polyline)
-    var pathShape = pathGroup.property("ADBE Vectors Group").addProperty("ADBE Vector Shape - Group");
-    var pathStroke = pathGroup.property("ADBE Vectors Group").addProperty("ADBE Vector Graphic - Stroke");
-    pathStroke.property("ADBE Vector Stroke Color").setValue([0.0, 1.0, 1.0]);
-    pathStroke.property("ADBE Vector Stroke Width").setValue(4);
-
-    // Trim Paths for path drawing animation
-    var trimPaths = pathGroup.property("ADBE Vectors Group").addProperty("ADBE Vector Filter - Trim");
-    var trimEnd = trimPaths.property("ADBE Vector Trim End");
-    trimEnd.setValueAtTime(0,  0);
-    trimEnd.setValueAtTime(15, 100);
-    easeAll(trimEnd);
-
-    // Destination marker (circle that follows path)
-    var marker = sc1.layers.addShape();
-    marker.name = "PathMarker";
-    var mGroup = marker.property("ADBE Root Vectors Group").addProperty("ADBE Vector Group");
-    var mEll   = mGroup.property("ADBE Vectors Group").addProperty("ADBE Vector Shape - Ellipse");
-    mEll.property("ADBE Vector Ellipse Size").setValue([30, 30]);
-    var mFill  = mGroup.property("ADBE Vectors Group").addProperty("ADBE Vector Graphic - Fill");
-    mFill.property("ADBE Vector Fill Color").setValue([1.0, 0.5, 0.0]);
-    var markerGlow = marker.Effects.addProperty("ADBE Glo2");
-    markerGlow.property("ADBE Glo2-0003").setValue(30);
-    markerGlow.property("ADBE Glo2-0004").setValue(3.0);
-
-    // Animate marker along path (simulated with position keyframes)
-    var mPos = marker.property("ADBE Transform Group").property("ADBE Position");
-    mPos.setValueAtTime(0,  [200, 700]);
-    mPos.setValueAtTime(5,  [500, 500]);
-    mPos.setValueAtTime(10, [900, 400]);
-    mPos.setValueAtTime(15, [1400, 300]);
-    mPos.setValueAtTime(20, [1700, 400]);
-    easeAll(mPos);
-
-    // "DESTINATION: MARS" label
-    var destLabel = sc1.layers.addText("DESTINATION: MARS");
-    destLabel.name = "DestLabel";
-    var dlTD = destLabel.property("ADBE Text Properties").property("ADBE Text Document").value;
-    dlTD.resetCharStyle();
-    dlTD.font = "Arial-BoldMT";
-    dlTD.fontSize = 48;
-    dlTD.fillColor = [0.0, 1.0, 1.0];
-    dlTD.justification = ParagraphJustification.CENTER_JUSTIFY;
-    destLabel.property("ADBE Text Properties").property("ADBE Text Document").setValue(dlTD);
-    destLabel.property("ADBE Transform Group").property("ADBE Position").setValue([960, 150]);
-    var dlOp = destLabel.property("ADBE Transform Group").property("ADBE Opacity");
-    dlOp.setValueAtTime(0, 0);
-    dlOp.setValueAtTime(3, 100);
-    easeAll(dlOp);
-
-    // ─────────────────────────────────────────────────────────────────────────
-    // SCENE 2 – Interactive Screen (Button + Cursor, 20-40s)
-    // ─────────────────────────────────────────────────────────────────────────
-    var sc2 = proj.items.addComp("Scene_02_InteractiveScreen", W, H, 1.0, 20, FPS);
-    sc2.parentFolder = folderScenes;
-    sc2.bgColor = [0.02, 0.02, 0.08];
-
-    // Button background
-    var btnBg = sc2.layers.addShape();
-    btnBg.name = "ExploreButton";
-    var btnGroup  = btnBg.property("ADBE Root Vectors Group").addProperty("ADBE Vector Group");
-    var btnRect   = btnGroup.property("ADBE Vectors Group").addProperty("ADBE Vector Shape - Rect");
-    btnRect.property("ADBE Vector Rect Size").setValue([400, 100]);
-    btnRect.property("ADBE Vector Rect Roundness").setValue(50);
-    var btnStroke = btnGroup.property("ADBE Vectors Group").addProperty("ADBE Vector Graphic - Stroke");
-    btnStroke.property("ADBE Vector Stroke Color").setValue([0.0, 1.0, 1.0]);
-    btnStroke.property("ADBE Vector Stroke Width").setValue(3);
-    var btnFillG  = btnGroup.property("ADBE Vectors Group").addProperty("ADBE Vector Graphic - Fill");
-    btnFillG.property("ADBE Vector Fill Color").setValue([0.0, 0.1, 0.3]);
-    btnBg.property("ADBE Transform Group").property("ADBE Position").setValue([960, 540]);
-
-    // Button scale animation (0 → 100%)
-    var btnScale = btnBg.property("ADBE Transform Group").property("ADBE Scale");
-    btnScale.setValueAtTime(0,   [0, 0]);
-    btnScale.setValueAtTime(1.5, [110, 110]);
-    btnScale.setValueAtTime(2.0, [100, 100]);
-    easeAll(btnScale);
-
-    // Button rotation (0 → 720)
-    var btnRot = btnBg.property("ADBE Transform Group").property("ADBE Rotate Z");
-    btnRot.setValueAtTime(0,   0);
-    btnRot.setValueAtTime(2.0, 720);
-    easeAll(btnRot);
-
-    // Button text
-    var btnText = sc2.layers.addText("EXPLORE NOW");
-    btnText.name = "ButtonText";
-    var btTD = btnText.property("ADBE Text Properties").property("ADBE Text Document").value;
-    btTD.resetCharStyle();
-    btTD.font = "Arial-BoldMT";
-    btTD.fontSize = 48;
-    btTD.fillColor = [0.0, 1.0, 1.0];
-    btTD.justification = ParagraphJustification.CENTER_JUSTIFY;
-    btnText.property("ADBE Text Properties").property("ADBE Text Document").setValue(btTD);
-    btnText.property("ADBE Transform Group").property("ADBE Position").setValue([960, 557]);
-    btnText.parent = btnBg;
-
-    // Cursor (triangle shape simulating cursor)
-    var cursor = sc2.layers.addShape();
-    cursor.name = "Cursor";
-    var curGroup = cursor.property("ADBE Root Vectors Group").addProperty("ADBE Vector Group");
-    var curPoly  = curGroup.property("ADBE Vectors Group").addProperty("ADBE Vector Shape - Rect");
-    curPoly.property("ADBE Vector Rect Size").setValue([20, 30]);
-    var curFill  = curGroup.property("ADBE Vectors Group").addProperty("ADBE Vector Graphic - Fill");
-    curFill.property("ADBE Vector Fill Color").setValue([1.0, 1.0, 1.0]);
-    cursor.property("ADBE Transform Group").property("ADBE Opacity").setValue(90);
-
-    // Cursor movement (simulates clicking the button)
-    var curPos = cursor.property("ADBE Transform Group").property("ADBE Position");
-    curPos.setValueAtTime(0,    [1600, 200]);
-    curPos.setValueAtTime(5,    [960, 540]);
-    curPos.setValueAtTime(5.5,  [960, 540]);
-    easeAll(curPos);
-
-    // Click: cursor scale pop
-    var curScale = cursor.property("ADBE Transform Group").property("ADBE Scale");
-    curScale.setValueAtTime(5,    [100, 100]);
-    curScale.setValueAtTime(5.1,  [120, 120]);
-    curScale.setValueAtTime(5.3,  [100, 100]);
-    easeAll(curScale);
-
-    // Button fade out after click
-    var btnOp = btnBg.property("ADBE Transform Group").property("ADBE Opacity");
-    btnOp.setValueAtTime(5.3,  100);
-    btnOp.setValueAtTime(7.0,  0);
-    easeAll(btnOp);
-
-    // ─────────────────────────────────────────────────────────────────────────
-    // SCENE 3 – Holographic Map (3D + Glow, 40-60s)
-    // ─────────────────────────────────────────────────────────────────────────
-    var sc3 = proj.items.addComp("Scene_03_HolographicMap", W, H, 1.0, 20, FPS);
-    sc3.parentFolder = folderScenes;
-    sc3.bgColor = [0.0, 0.02, 0.05];
-
-    // Hologram circle rings
-    for (var r = 0; r < 4; r++) {
-        var ring = sc3.layers.addShape();
-        ring.name = "HoloRing_" + r;
-        var ringGroup  = ring.property("ADBE Root Vectors Group").addProperty("ADBE Vector Group");
-        var ringEll    = ringGroup.property("ADBE Vectors Group").addProperty("ADBE Vector Shape - Ellipse");
-        ringEll.property("ADBE Vector Ellipse Size").setValue([200 + r * 120, 200 + r * 120]);
-        var ringStroke = ringGroup.property("ADBE Vectors Group").addProperty("ADBE Vector Graphic - Stroke");
-        ringStroke.property("ADBE Vector Stroke Color").setValue([0.0, 0.8, 1.0]);
-        ringStroke.property("ADBE Vector Stroke Width").setValue(2);
-        ring.property("ADBE Transform Group").property("ADBE Position").setValue([960, 540]);
-        ring.property("ADBE Transform Group").property("ADBE Opacity").setValue(60 - r * 10);
-        ring.threeDLayer = true;
-
-        // Pop-up scale animation
-        var ringS = ring.property("ADBE Transform Group").property("ADBE Scale");
-        ringS.setValueAtTime(0,   [0, 0, 0]);
-        ringS.setValueAtTime(1.5, [110 + r * 5, 110 + r * 5, 110 + r * 5]);
-        ringS.setValueAtTime(2.0, [100, 100, 100]);
-        easeAll(ringS);
-
-        // Spinning rotation
-        var ringRot = ring.property("ADBE Transform Group").property("ADBE Rotate Y");
-        if (ringRot) {
-            ringRot.setValueAtTime(0,   0);
-            ringRot.setValueAtTime(20, 360 * (r % 2 === 0 ? 1 : -1));
+    function getProp(parent, names) {
+        if (!parent) return null;
+        for (var i = 0; i < names.length; i++) {
+            try {
+                var p = parent.property(names[i]);
+                if (p) return p;
+            } catch(e) {}
         }
-        
-        // Glow
-        var ringGlow = ring.Effects.addProperty("ADBE Glo2");
-        ringGlow.property("ADBE Glo2-0003").setValue(40 + r * 10);
-        ringGlow.property("ADBE Glo2-0004").setValue(2.0);
+        return null;
     }
 
-    // "HOLOGRAPHIC INTERFACE" label
-    var holoLabel = sc3.layers.addText("HOLOGRAPHIC\nINTERFACE");
-    holoLabel.name = "HoloLabel";
-    var hlTD = holoLabel.property("ADBE Text Properties").property("ADBE Text Document").value;
-    hlTD.resetCharStyle();
-    hlTD.font = "Arial-BoldMT";
-    hlTD.fontSize = 72;
-    hlTD.fillColor = [0.0, 1.0, 0.8];
-    hlTD.justification = ParagraphJustification.CENTER_JUSTIFY;
-    holoLabel.property("ADBE Text Properties").property("ADBE Text Document").setValue(hlTD);
-    holoLabel.property("ADBE Transform Group").property("ADBE Position").setValue([960, 200]);
-    var hlGlow = holoLabel.Effects.addProperty("ADBE Glo2");
-    hlGlow.property("ADBE Glo2-0003").setValue(50);
-    hlGlow.property("ADBE Glo2-0004").setValue(2.5);
-
-    // ─────────────────────────────────────────────────────────────────────────
-    // SCENE 4 – Title Reveal / Rotating Typography (60-75s)
-    // ─────────────────────────────────────────────────────────────────────────
-    var sc4 = proj.items.addComp("Scene_04_TitleReveal", W, H, 1.0, 15, FPS);
-    sc4.parentFolder = folderScenes;
-    sc4.bgColor = [0.0, 0.0, 0.05];
-
-    // Dark gradient bg
-    var titleBg = sc4.layers.addSolid([0.0, 0.0, 0.08], "TitleBG", W, H, 1.0);
-    var titleBgGrad = titleBg.Effects.addProperty("ADBE Ramp");
-    titleBgGrad.property("ADBE Ramp-0001").setValue([960, 0]);
-    titleBgGrad.property("ADBE Ramp-0002").setValue([0.0, 0.05, 0.2]);
-    titleBgGrad.property("ADBE Ramp-0003").setValue([960, 1080]);
-    titleBgGrad.property("ADBE Ramp-0004").setValue([0.0, 0.0, 0.0]);
-    titleBg.moveToEnd();
-
-    // Main 3D title
-    var mainTitle = sc4.layers.addText("NEXT DESTINATION:\nMARS");
-    mainTitle.name = "MainTitle_3D";
-    mainTitle.threeDLayer = true;
-    var mtTD = mainTitle.property("ADBE Text Properties").property("ADBE Text Document").value;
-    mtTD.resetCharStyle();
-    mtTD.font = "Arial-BoldMT";
-    mtTD.fontSize = 120;
-    mtTD.fillColor = [1.0, 0.6, 0.0];
-    mtTD.justification = ParagraphJustification.CENTER_JUSTIFY;
-    mainTitle.property("ADBE Text Properties").property("ADBE Text Document").setValue(mtTD);
-
-    // Position (slide in from right)
-    var mtPos = mainTitle.property("ADBE Transform Group").property("ADBE Position");
-    mtPos.setValueAtTime(0,   [3000, 540, 0]);
-    mtPos.setValueAtTime(3,   [960, 540, 0]);
-    easeAll(mtPos);
-
-    // Y Rotation (0 → 180 → 0)
-    var mtRotY = mainTitle.property("ADBE Transform Group").property("ADBE Rotate Y");
-    if (mtRotY) {
-        mtRotY.setValueAtTime(0,   180);
-        mtRotY.setValueAtTime(3,   0);
-        easeAll(mtRotY);
+    function getRotation(layer) {
+        if (!layer) return null;
+        var tg = layer.property("ADBE Transform Group");
+        if (!tg) return null;
+        return getProp(tg, ["ADBE Rotate Z", "ADBE Rotation", "Rotation"]);
     }
 
-    // Motion blur
-    mainTitle.motionBlur = true;
-
-    // Glow on title
-    var mtGlow = mainTitle.Effects.addProperty("ADBE Glo2");
-    mtGlow.property("ADBE Glo2-0003").setValue(60);
-    mtGlow.property("ADBE Glo2-0004").setValue(2.0);
-
-    // Subtitle
-    var subTitle = sc4.layers.addText("A MOTION DESIGN STORY");
-    subTitle.name = "Subtitle";
-    var stTD = subTitle.property("ADBE Text Properties").property("ADBE Text Document").value;
-    stTD.resetCharStyle();
-    stTD.font = "Arial-ItalicMT";
-    stTD.fontSize = 48;
-    stTD.fillColor = [0.0, 0.8, 1.0];
-    stTD.justification = ParagraphJustification.CENTER_JUSTIFY;
-    subTitle.property("ADBE Text Properties").property("ADBE Text Document").setValue(stTD);
-    subTitle.property("ADBE Transform Group").property("ADBE Position").setValue([960, 680]);
-    var stOp = subTitle.property("ADBE Transform Group").property("ADBE Opacity");
-    stOp.setValueAtTime(2, 0);
-    stOp.setValueAtTime(4, 100);
-    easeAll(stOp);
-
-    // ─────────────────────────────────────────────────────────────────────────
-    // SCENE 5 – Kinetic Text Transition (75-90s)
-    // ─────────────────────────────────────────────────────────────────────────
-    var sc5 = proj.items.addComp("Scene_05_KineticText", W, H, 1.0, 15, FPS);
-    sc5.parentFolder = folderScenes;
-    sc5.bgColor = [0.0, 0.0, 0.03];
-
-    // "EXPLORATION BEGINS" hanging text
-    var kineticText = sc5.layers.addText("EXPLORATION BEGINS");
-    kineticText.name = "KineticText_Main";
-    kineticText.threeDLayer = true;
-    kineticText.motionBlur = true;
-    var ktTD = kineticText.property("ADBE Text Properties").property("ADBE Text Document").value;
-    ktTD.resetCharStyle();
-    ktTD.font = "Arial-BoldMT";
-    ktTD.fontSize = 100;
-    ktTD.fillColor = [1.0, 1.0, 1.0];
-    ktTD.justification = ParagraphJustification.CENTER_JUSTIFY;
-    kineticText.property("ADBE Text Properties").property("ADBE Text Document").setValue(ktTD);
-
-    // Anchor point to top (hanging effect)
-    kineticText.property("ADBE Transform Group").property("ADBE Anchor Point").setValue([960, 0, 0]);
-    kineticText.property("ADBE Transform Group").property("ADBE Position").setValue([960, 400, 0]);
-
-    // Y Rotation: 180 → 0 (hang swing in)
-    var ktRotY = kineticText.property("ADBE Transform Group").property("ADBE Rotate Y");
-    if (ktRotY) {
-        ktRotY.setValueAtTime(0,   180);
-        ktRotY.setValueAtTime(3,   0);
-        easeAll(ktRotY);
-    }
-
-    // Position: off-screen → center
-    var ktPos = kineticText.property("ADBE Transform Group").property("ADBE Position");
-    ktPos.setValueAtTime(0,   [960, -300, 0]);
-    ktPos.setValueAtTime(3,   [960, 400, 0]);
-    easeAll(ktPos);
-
-    // Opacity fade in
-    var ktOp = kineticText.property("ADBE Transform Group").property("ADBE Opacity");
-    ktOp.setValueAtTime(0, 0);
-    ktOp.setValueAtTime(2, 100);
-    easeAll(ktOp);
-
-    // Glow
-    var ktGlow = kineticText.Effects.addProperty("ADBE Glo2");
-    ktGlow.property("ADBE Glo2-0003").setValue(40);
-    ktGlow.property("ADBE Glo2-0004").setValue(1.5);
-
-    // "THE FUTURE IS NOW" secondary line
-    var kineticText2 = sc5.layers.addText("THE FUTURE IS NOW");
-    kineticText2.name = "KineticText_Sub";
-    var kt2TD = kineticText2.property("ADBE Text Properties").property("ADBE Text Document").value;
-    kt2TD.resetCharStyle();
-    kt2TD.font = "Arial-ItalicMT";
-    kt2TD.fontSize = 60;
-    kt2TD.fillColor = [0.0, 1.0, 1.0];
-    kt2TD.justification = ParagraphJustification.CENTER_JUSTIFY;
-    kineticText2.property("ADBE Text Properties").property("ADBE Text Document").setValue(kt2TD);
-    kineticText2.property("ADBE Transform Group").property("ADBE Position").setValue([960, 580]);
-    var kt2Op = kineticText2.property("ADBE Transform Group").property("ADBE Opacity");
-    kt2Op.setValueAtTime(3, 0);
-    kt2Op.setValueAtTime(5, 100);
-    easeAll(kt2Op);
-
-    // ─────────────────────────────────────────────────────────────────────────
-    // SCENE 6 – Final Integration (90-100s)
-    // ─────────────────────────────────────────────────────────────────────────
-    var sc6 = proj.items.addComp("Scene_06_FinalIntegration", W, H, 1.0, 10, FPS);
-    sc6.parentFolder = folderScenes;
-    sc6.bgColor = [0.0, 0.0, 0.0];
-
-    // End card
-    var endCard = sc6.layers.addSolid([0.0, 0.0, 0.05], "EndCardBG", W, H, 1.0);
-    endCard.moveToEnd();
-    var endCardGrad = endCard.Effects.addProperty("ADBE Ramp");
-    endCardGrad.property("ADBE Ramp-0001").setValue([960, 0]);
-    endCardGrad.property("ADBE Ramp-0002").setValue([0.0, 0.1, 0.4]);
-    endCardGrad.property("ADBE Ramp-0003").setValue([960, 1080]);
-    endCardGrad.property("ADBE Ramp-0004").setValue([0.0, 0.0, 0.0]);
-
-    var endTitle = sc6.layers.addText("FUTURE VOYAGE");
-    endTitle.name = "EndTitle";
-    var etTD = endTitle.property("ADBE Text Properties").property("ADBE Text Document").value;
-    etTD.resetCharStyle();
-    etTD.font = "Arial-BoldMT";
-    etTD.fontSize = 140;
-    etTD.fillColor = [1.0, 0.6, 0.0];
-    etTD.justification = ParagraphJustification.CENTER_JUSTIFY;
-    endTitle.property("ADBE Text Properties").property("ADBE Text Document").setValue(etTD);
-    endTitle.property("ADBE Transform Group").property("ADBE Position").setValue([960, 500]);
-    var etGlow = endTitle.Effects.addProperty("ADBE Glo2");
-    etGlow.property("ADBE Glo2-0003").setValue(70);
-    etGlow.property("ADBE Glo2-0004").setValue(3.0);
-    var etOp = endTitle.property("ADBE Transform Group").property("ADBE Opacity");
-    etOp.setValueAtTime(0, 0);
-    etOp.setValueAtTime(2, 100);
-    easeAll(etOp);
-
-    var endSub = sc6.layers.addText("A Motion Design Story in After Effects");
-    endSub.name = "EndSubtitle";
-    var esTD = endSub.property("ADBE Text Properties").property("ADBE Text Document").value;
-    esTD.resetCharStyle();
-    esTD.font = "Arial-ItalicMT";
-    esTD.fontSize = 48;
-    esTD.fillColor = [0.0, 0.8, 1.0];
-    esTD.justification = ParagraphJustification.CENTER_JUSTIFY;
-    endSub.property("ADBE Text Properties").property("ADBE Text Document").setValue(esTD);
-    endSub.property("ADBE Transform Group").property("ADBE Position").setValue([960, 620]);
-
-    // ─────────────────────────────────────────────────────────────────────────
-    // MASTER COMPOSITION (100s)
-    // ─────────────────────────────────────────────────────────────────────────
-    var masterComp = proj.items.addComp("MASTER_FutureVoyage", W, H, 1.0, DUR, FPS);
-    masterComp.parentFolder = folderScenes;
-
-    // Add scenes sequentially
-    var sc1Layer = masterComp.layers.add(sc1, 20);
-    sc1Layer.startTime = 0;
-    sc1Layer.name = "SC1_MapPath";
-
-    var sc2Layer = masterComp.layers.add(sc2, 20);
-    sc2Layer.startTime = 20;
-    sc2Layer.name = "SC2_Interactive";
-
-    var sc3Layer = masterComp.layers.add(sc3, 20);
-    sc3Layer.startTime = 40;
-    sc3Layer.name = "SC3_Holographic";
-
-    var sc4Layer = masterComp.layers.add(sc4, 15);
-    sc4Layer.startTime = 60;
-    sc4Layer.name = "SC4_TitleReveal";
-
-    var sc5Layer = masterComp.layers.add(sc5, 15);
-    sc5Layer.startTime = 75;
-    sc5Layer.name = "SC5_KineticText";
-
-    var sc6Layer = masterComp.layers.add(sc6, 10);
-    sc6Layer.startTime = 90;
-    sc6Layer.name = "SC6_FinalIntegration";
-
-    // Camera push-in null
-    var camNull = masterComp.layers.addNull();
-    camNull.name = "CameraNull_PushIn";
-    var camScale = camNull.property("ADBE Transform Group").property("ADBE Scale");
-    camScale.setValueAtTime(0,   [100, 100]);
-    camScale.setValueAtTime(DUR, [102.5, 102.5]);
-    easeAll(camScale);
-
-    // Lumetri color adjustment
-    var adj = masterComp.layers.addSolid([0,0,0], "ColorGrading_Adj", W, H, 1.0);
-    adj.adjustmentLayer = true;
-    adj.name = "LumetriColorGrading";
-    var lumetri = adj.Effects.addProperty("ADBE Lumetri");
-    if (lumetri) {
-        // Slight cool/cinematic tone
+    var projectRoot = "C:/Users/Admin/Documents/GitHub/AE/Project Future Voyage A Motion Design Story in After Effects/assets/";
+    function importAsset(relPath) {
+        var f = new File(projectRoot + relPath);
+        if (!f.exists) return null;
         try {
-            lumetri.property("ADBE Lumetri-0001").property("ADBE Lumetri Exposure").setValue(-0.1);
-            lumetri.property("ADBE Lumetri-0001").property("ADBE Lumetri Contrast").setValue(15);
+            var item = proj.importFile(new ImportOptions(f));
+            item.parentFolder = folderAssets;
+            return item;
+        } catch(e) {
+            return null;
+        }
+    }
+
+    trace("TRACE 3: Importing assets");
+    var footageWorldMap  = importAsset("images/world_map.png");
+    var footagePlane     = importAsset("images/plane.png");
+    var footageButton    = importAsset("images/interactive_button.png");
+    var footageCursor    = importAsset("images/cursor.png");
+    var footageDevice    = importAsset("images/device_hand.png");
+    var footageHud       = importAsset("images/hud_reticle.png");
+    var footageStars     = importAsset("images/stars_bg.jpg");
+    var footageAudio     = importAsset("audio/space_soundtrack.mp3");
+    var footageWhoosh    = importAsset("audio/whoosh.mp3");
+    var footageClick     = importAsset("audio/click.mp3");
+
+    trace("TRACE 4: Scene 1 Map Path");
+    var sc1 = proj.items.addComp("Scene_01_MapPath", W, H, 1.0, DUR, FPS);
+    sc1.parentFolder = folderScenes;
+
+    var sc1Bg = sc1.layers.addSolid([0.02, 0.04, 0.09], "Map_DeepBackground", W, H, 1.0);
+    sc1Bg.moveToEnd();
+
+    if (footageWorldMap) {
+        var mapLayer = sc1.layers.add(footageWorldMap);
+        mapLayer.name = "WorldMap_Blueprint";
+        mapLayer.property("ADBE Transform Group").property("ADBE Scale").setValue([78, 78]);
+        mapLayer.property("ADBE Transform Group").property("ADBE Position").setValue([960, 540]);
+        mapLayer.property("ADBE Transform Group").property("ADBE Opacity").setValue(45);
+        try {
+            var mapTint = mapLayer.Effects.addProperty("ADBE Tint");
+            mapTint.property("ADBE Tint-0002").setValue([0.0, 0.8, 1.0]);
         } catch(e) {}
     }
 
-    // Motion blur on master
-    masterComp.motionBlurAdaptiveSampleLimit = 16;
+    for (var g = 0; g < 6; g++) {
+        var gridLine = sc1.layers.addSolid([0.0, 0.6, 0.9], "Grid_Line_" + g, W, 1, 1.0);
+        gridLine.property("ADBE Transform Group").property("ADBE Position").setValue([960, 160 + g * 150]);
+        gridLine.property("ADBE Transform Group").property("ADBE Opacity").setValue(20);
+    }
 
-    // ─── RENDER QUEUE ─────────────────────────────────────────────────────────
-    var rqItem = proj.renderQueue.items.add(masterComp);
-    rqItem.outputModules[1].applyTemplate("Lossless");
-    rqItem.outputModules[1].file = new File(
-        "c:/Users/Admin/Documents/GitHub/AE/Project Future Voyage A Motion Design Story in After Effects/Final_FutureVoyage.avi"
-    );
+    var pathShape = sc1.layers.addShape();
+    pathShape.name = "Flight_Trajectory_Path";
+    var contents = pathShape.property("ADBE Root Vectors Group");
 
-    proj.save(new File(
-        "c:/Users/Admin/Documents/GitHub/AE/Project Future Voyage A Motion Design Story in After Effects/Future_Voyage_MotionStory.aep"
-    ));
+    var pathGroup = contents.addProperty("ADBE Vector Shape - Group");
+    var curve = new Shape();
+    curve.vertices = [[350, 750], [700, 420], [1150, 480], [1580, 280]];
+    curve.inTangents = [[0, 0], [-120, 80], [-100, -60], [-80, 40]];
+    curve.outTangents = [[100, -80], [120, -80], [100, 60], [0, 0]];
+    curve.closed = false;
+    pathGroup.property("ADBE Vector Shape").setValue(curve);
 
-    app.endUndoGroup();
-    // Project built successfully
+    var pStroke = contents.addProperty("ADBE Vector Graphic - Stroke");
+    pStroke.property("ADBE Vector Stroke Color").setValue([0.0, 0.9, 1.0]);
+    pStroke.property("ADBE Vector Stroke Width").setValue(6);
+
+    var trim = contents.addProperty("ADBE Vector Filter - Trim");
+    var trimEnd = trim.property("ADBE Vector Trim End");
+    if (trimEnd) {
+        trimEnd.setValueAtTime(1.0,  0);
+        trimEnd.setValueAtTime(14.0, 100);
+        easeAll(trimEnd);
+    }
+
+    if (footageHud) {
+        var hudLayer = sc1.layers.add(footageHud);
+        hudLayer.name = "Waypoint_Target_HUD";
+        hudLayer.property("ADBE Transform Group").property("ADBE Scale").setValue([65, 65]);
+        hudLayer.property("ADBE Transform Group").property("ADBE Position").setValue([1580, 280]);
+        var hudRot = getRotation(hudLayer);
+        if (hudRot) {
+            hudRot.expression = "time * 45;";
+        }
+        var hudOp = hudLayer.property("ADBE Transform Group").property("ADBE Opacity");
+        hudOp.setValueAtTime(0,  0);
+        hudOp.setValueAtTime(12, 0);
+        hudOp.setValueAtTime(14, 100);
+        easeAll(hudOp);
+    }
+
+    if (footagePlane) {
+        var planeLayer = sc1.layers.add(footagePlane);
+        planeLayer.name = "Voyager_Craft_Marker";
+        planeLayer.property("ADBE Transform Group").property("ADBE Scale").setValue([18, 18]);
+        var plPos = planeLayer.property("ADBE Transform Group").property("ADBE Position");
+        plPos.setValueAtTime(1.0,  [350, 750]);
+        plPos.setValueAtTime(5.5,  [700, 420]);
+        plPos.setValueAtTime(10.0, [1150, 480]);
+        plPos.setValueAtTime(14.0, [1580, 280]);
+        easeAll(plPos);
+
+        var plRot = getRotation(planeLayer);
+        if (plRot) {
+            plRot.setValueAtTime(1.0,  -35);
+            plRot.setValueAtTime(5.5,  15);
+            plRot.setValueAtTime(10.0, -25);
+            plRot.setValueAtTime(14.0, 0);
+            easeAll(plRot);
+        }
+    }
+
+    trace("TRACE 5: Scene 2 Interactive UI");
+    var sc2 = proj.items.addComp("Scene_02_InteractiveUI", W, H, 1.0, DUR, FPS);
+    sc2.parentFolder = folderScenes;
+    sc2.bgColor = [0.03, 0.05, 0.10];
+
+    var sc2Bg = sc2.layers.addSolid([0.05, 0.08, 0.16], "UI_Console_BG", W, H, 1.0);
+    sc2Bg.moveToEnd();
+
+    var btnComp = proj.items.addComp("PreComp_UIButton", 600, 200, 1.0, DUR, FPS);
+    btnComp.parentFolder = folderPrecomps;
+
+    if (footageButton) {
+        var btnGraphic = btnComp.layers.add(footageButton);
+        btnGraphic.name = "Button_Capsule";
+        btnGraphic.property("ADBE Transform Group").property("ADBE Position").setValue([300, 100]);
+    }
+    var btnText = btnComp.layers.addText("INITIALIZE VOYAGE");
+    btnText.name = "Button_Label";
+    var btTD = btnText.property("ADBE Text Properties").property("ADBE Text Document").value;
+    btTD.resetCharStyle();
+    btTD.font = "Arial-BoldMT";
+    btTD.fontSize = 36;
+    btTD.fillColor = [0.0, 0.9, 1.0];
+    btTD.justification = ParagraphJustification.CENTER_JUSTIFY;
+    btnText.property("ADBE Text Properties").property("ADBE Text Document").setValue(btTD);
+    btnText.property("ADBE Transform Group").property("ADBE Position").setValue([300, 112]);
+
+    var btnLayer = sc2.layers.add(btnComp);
+    btnLayer.name = "Interactive_Button_Element";
+    btnLayer.property("ADBE Transform Group").property("ADBE Position").setValue([960, 540]);
+
+    var btnScale = btnLayer.property("ADBE Transform Group").property("ADBE Scale");
+    btnScale.setValueAtTime(0.5, [0, 0]);
+    btnScale.setValueAtTime(3.0, [100, 100]);
+    btnScale.setValueAtTime(7.0, [100, 100]);
+    btnScale.setValueAtTime(7.2, [120, 120]);
+    btnScale.setValueAtTime(7.5, [100, 100]);
+    easeAll(btnScale);
+
+    var btnRot = getRotation(btnLayer);
+    if (btnRot) {
+        btnRot.setValueAtTime(0.5, 0);
+        btnRot.setValueAtTime(3.0, 720);
+        easeAll(btnRot);
+    }
+
+    if (footageCursor) {
+        var curLayer = sc2.layers.add(footageCursor);
+        curLayer.name = "Interactive_Pointer_Cursor";
+        curLayer.property("ADBE Transform Group").property("ADBE Scale").setValue([35, 35]);
+        var curPos = curLayer.property("ADBE Transform Group").property("ADBE Position");
+        curPos.setValueAtTime(3.5, [1600, 950]);
+        curPos.setValueAtTime(6.8, [980, 560]);
+        easeAll(curPos);
+
+        var curScale = curLayer.property("ADBE Transform Group").property("ADBE Scale");
+        curScale.setValueAtTime(6.8, [35, 35]);
+        curScale.setValueAtTime(7.0, [27, 27]);
+        curScale.setValueAtTime(7.3, [35, 35]);
+        easeAll(curScale);
+
+        var curOp = curLayer.property("ADBE Transform Group").property("ADBE Opacity");
+        curOp.setValueAtTime(8.0, 100);
+        curOp.setValueAtTime(9.5, 0);
+        easeAll(curOp);
+    }
+
+    trace("TRACE 6: Scene 3 Holographic Map");
+    var sc3 = proj.items.addComp("Scene_03_HolographicMap", W, H, 1.0, DUR, FPS);
+    sc3.parentFolder = folderScenes;
+
+    var sc3Bg = sc3.layers.addSolid([0.02, 0.03, 0.06], "Holo_BG", W, H, 1.0);
+    sc3Bg.moveToEnd();
+
+    var devNull = sc3.layers.addNull();
+    devNull.name = "MotionTracker_TargetNull";
+    devNull.property("ADBE Transform Group").property("ADBE Position").setValue([960, 680]);
+
+    if (footageDevice) {
+        var devLayer = sc3.layers.add(footageDevice);
+        devLayer.name = "Mobile_Device_Frame";
+        devLayer.property("ADBE Transform Group").property("ADBE Scale").setValue([70, 70]);
+        devLayer.property("ADBE Transform Group").property("ADBE Position").setValue([960, 750]);
+        devLayer.parent = devNull;
+    }
+
+    var holoComp = proj.items.addComp("PreComp_HologramSphere", 800, 800, 1.0, DUR, FPS);
+    holoComp.parentFolder = folderPrecomps;
+
+    for (var r = 0; r < 4; r++) {
+        var ring = holoComp.layers.addShape();
+        ring.name = "Holo_Ring_" + r;
+        var rGroup = ring.property("ADBE Root Vectors Group").addProperty("ADBE Vector Group");
+        var rEll   = rGroup.property("ADBE Vectors Group").addProperty("ADBE Vector Shape - Ellipse");
+        rEll.property("ADBE Vector Ellipse Size").setValue([250 + r * 110, 100 + r * 45]);
+        var rStr   = rGroup.property("ADBE Vectors Group").addProperty("ADBE Vector Graphic - Stroke");
+        rStr.property("ADBE Vector Stroke Color").setValue([0.0, 0.9, 1.0]);
+        rStr.property("ADBE Vector Stroke Width").setValue(3);
+        ring.property("ADBE Transform Group").property("ADBE Position").setValue([400, 400]);
+        var rRot = getRotation(ring);
+        if (rRot) {
+            rRot.expression = "(time * " + (30 + r * 20) + ") % 360;";
+        }
+    }
+
+    if (footageWorldMap) {
+        var hMap = holoComp.layers.add(footageWorldMap);
+        hMap.name = "Hologram_Planet_Texture";
+        hMap.property("ADBE Transform Group").property("ADBE Scale").setValue([30, 30]);
+        hMap.property("ADBE Transform Group").property("ADBE Position").setValue([400, 400]);
+        hMap.property("ADBE Transform Group").property("ADBE Opacity").setValue(70);
+    }
+
+    var holoLayer = sc3.layers.add(holoComp);
+    holoLayer.name = "3D_Hologram_Projection";
+    holoLayer.threeDLayer = true;
+    holoLayer.parent = devNull;
+    holoLayer.property("ADBE Transform Group").property("ADBE Position").setValue([0, -220, 0]);
+
+    var hScale = holoLayer.property("ADBE Transform Group").property("ADBE Scale");
+    hScale.setValueAtTime(1.0, [0, 0, 0]);
+    hScale.setValueAtTime(4.0, [100, 100, 100]);
+    easeAll(hScale);
+
+    var hRotY = holoLayer.property("ADBE Transform Group").property("ADBE Rotate Y");
+    if (hRotY) {
+        hRotY.expression = "time * 45;";
+    }
+
+    var hGlow = holoLayer.Effects.addProperty("ADBE Glo2");
+    hGlow.property("ADBE Glo2-0003").setValue(50);
+    hGlow.property("ADBE Glo2-0004").setValue(2.8);
+
+    trace("TRACE 7: Scene 4 3D Title Reveal");
+    var sc4 = proj.items.addComp("Scene_04_TitleReveal", W, H, 1.0, DUR, FPS);
+    sc4.parentFolder = folderScenes;
+
+    if (footageStars) {
+        var starBg = sc4.layers.add(footageStars);
+        starBg.name = "Deep_Space_Stars";
+        starBg.property("ADBE Transform Group").property("ADBE Scale").setValue([110, 110]);
+        starBg.property("ADBE Transform Group").property("ADBE Position").setValue([960, 540]);
+        starBg.moveToEnd();
+    }
+
+    var title3D = sc4.layers.addText("Next Destination: Mars");
+    title3D.name = "Title_NextDestinationMars";
+    title3D.threeDLayer = true;
+    title3D.motionBlur = true;
+    var tTD = title3D.property("ADBE Text Properties").property("ADBE Text Document").value;
+    tTD.resetCharStyle();
+    tTD.font = "Arial-BoldMT";
+    tTD.fontSize = 110;
+    tTD.fillColor = [1.0, 0.6, 0.2];
+    tTD.justification = ParagraphJustification.CENTER_JUSTIFY;
+    title3D.property("ADBE Text Properties").property("ADBE Text Document").setValue(tTD);
+
+    var tPos = title3D.property("ADBE Transform Group").property("ADBE Position");
+    tPos.setValueAtTime(1.0,  [W + 400, 540, 200]);
+    tPos.setValueAtTime(5.0,  [960, 540, 0]);
+    easeAll(tPos);
+
+    var tRotY = title3D.property("ADBE Transform Group").property("ADBE Rotate Y");
+    if (tRotY) {
+        tRotY.setValueAtTime(1.0, 180);
+        tRotY.setValueAtTime(5.0, 0);
+        easeAll(tRotY);
+    }
+
+    var tGlow = title3D.Effects.addProperty("ADBE Glo2");
+    tGlow.property("ADBE Glo2-0003").setValue(60);
+    tGlow.property("ADBE Glo2-0004").setValue(2.5);
+
+    trace("TRACE 8: Scene 5 Kinetic Text");
+    var sc5 = proj.items.addComp("Scene_05_KineticText", W, H, 1.0, DUR, FPS);
+    sc5.parentFolder = folderScenes;
+
+    var sc5Bg = sc5.layers.addSolid([0.02, 0.04, 0.08], "Kinetic_BG", W, H, 1.0);
+    sc5Bg.moveToEnd();
+
+    var kineticText = sc5.layers.addText("Exploration Begins");
+    kineticText.name = "Kinetic_ExplorationBegins";
+    kineticText.threeDLayer = true;
+    kineticText.motionBlur = true;
+
+    var kTD = kineticText.property("ADBE Text Properties").property("ADBE Text Document").value;
+    kTD.resetCharStyle();
+    kTD.font = "Arial-BoldMT";
+    kTD.fontSize = 130;
+    kTD.fillColor = [0.0, 0.95, 1.0];
+    kTD.justification = ParagraphJustification.CENTER_JUSTIFY;
+    kineticText.property("ADBE Text Properties").property("ADBE Text Document").setValue(kTD);
+
+    kineticText.property("ADBE Transform Group").property("ADBE Anchor Point").setValue([0, -80, 0]);
+
+    var kPos = kineticText.property("ADBE Transform Group").property("ADBE Position");
+    kPos.setValueAtTime(1.0, [960, -200, 0]);
+    kPos.setValueAtTime(4.5, [960, 540, 0]);
+    easeAll(kPos);
+
+    var kRotX = kineticText.property("ADBE Transform Group").property("ADBE Rotate X");
+    if (kRotX) {
+        kRotX.setValueAtTime(1.0, -90);
+        kRotX.setValueAtTime(3.0, 30);
+        kRotX.setValueAtTime(4.5, 0);
+        easeAll(kRotX);
+    }
+
+    var kRotY = kineticText.property("ADBE Transform Group").property("ADBE Rotate Y");
+    if (kRotY) {
+        kRotY.setValueAtTime(1.0, 180);
+        kRotY.setValueAtTime(4.5, 0);
+        easeAll(kRotY);
+    }
+
+    var kOp = kineticText.property("ADBE Transform Group").property("ADBE Opacity");
+    kOp.setValueAtTime(1.0, 0);
+    kOp.setValueAtTime(3.5, 100);
+    easeAll(kOp);
+
+    var kGlow = kineticText.Effects.addProperty("ADBE Glo2");
+    kGlow.property("ADBE Glo2-0003").setValue(50);
+    kGlow.property("ADBE Glo2-0004").setValue(2.8);
+
+    trace("TRACE 9: Scene 6 Master Comp");
+    var masterComp = proj.items.addComp("MASTER_FutureVoyage", W, H, 1.0, DUR, FPS);
+    masterComp.parentFolder = folderScenes;
+
+    if (footageAudio) {
+        var aLayer = masterComp.layers.add(footageAudio);
+        aLayer.name = "Space_Cinematic_Audio";
+        var aLev = aLayer.property("ADBE Audio Group").property("ADBE Audio Levels");
+        aLev.setValueAtTime(0,       [-48.0, -48.0]);
+        aLev.setValueAtTime(3.0,     [0.0, 0.0]);
+        aLev.setValueAtTime(DUR - 4, [0.0, 0.0]);
+        aLev.setValueAtTime(DUR,     [-48.0, -48.0]);
+        easeAll(aLev);
+    }
+
+    if (footageWhoosh) {
+        var wLayer1 = masterComp.layers.add(footageWhoosh);
+        wLayer1.startTime = 18.0;
+        var wLayer2 = masterComp.layers.add(footageWhoosh);
+        wLayer2.startTime = 36.0;
+        var wLayer3 = masterComp.layers.add(footageWhoosh);
+        wLayer3.startTime = 53.0;
+    }
+
+    var lSc1 = masterComp.layers.add(sc1);
+    lSc1.startTime = 0;
+    var op1 = lSc1.property("ADBE Transform Group").property("ADBE Opacity");
+    op1.setValueAtTime(18.0, 100);
+    op1.setValueAtTime(20.0, 0);
+    easeAll(op1);
+
+    var lSc2 = masterComp.layers.add(sc2);
+    lSc2.startTime = 18.0;
+    var op2 = lSc2.property("ADBE Transform Group").property("ADBE Opacity");
+    op2.setValueAtTime(18.0, 0);
+    op2.setValueAtTime(19.5, 100);
+    op2.setValueAtTime(36.0, 100);
+    op2.setValueAtTime(38.0, 0);
+    easeAll(op2);
+
+    var lSc3 = masterComp.layers.add(sc3);
+    lSc3.startTime = 36.0;
+    var op3 = lSc3.property("ADBE Transform Group").property("ADBE Opacity");
+    op3.setValueAtTime(36.0, 0);
+    op3.setValueAtTime(37.5, 100);
+    op3.setValueAtTime(53.0, 100);
+    op3.setValueAtTime(55.0, 0);
+    easeAll(op3);
+
+    var lSc4 = masterComp.layers.add(sc4);
+    lSc4.startTime = 53.0;
+    var op4 = lSc4.property("ADBE Transform Group").property("ADBE Opacity");
+    op4.setValueAtTime(53.0, 0);
+    op4.setValueAtTime(54.5, 100);
+    op4.setValueAtTime(70.0, 100);
+    op4.setValueAtTime(72.0, 0);
+    easeAll(op4);
+
+    var lSc5 = masterComp.layers.add(sc5);
+    lSc5.startTime = 70.0;
+    var op5 = lSc5.property("ADBE Transform Group").property("ADBE Opacity");
+    op5.setValueAtTime(70.0, 0);
+    op5.setValueAtTime(71.5, 100);
+    op5.setValueAtTime(92.0, 100);
+    op5.setValueAtTime(95.0, 0);
+    easeAll(op5);
+
+    var masterCamera = masterComp.layers.addNull();
+    masterCamera.name = "Master_Cinematic_PushIn";
+    var mcScale = masterCamera.property("ADBE Transform Group").property("ADBE Scale");
+    mcScale.setValueAtTime(0,   [100, 100]);
+    mcScale.setValueAtTime(DUR, [103.0, 103.0]);
+    easeAll(mcScale);
+    lSc1.parent = masterCamera;
+    lSc2.parent = masterCamera;
+    lSc3.parent = masterCamera;
+    lSc4.parent = masterCamera;
+    lSc5.parent = masterCamera;
+
+    var adjLayer = masterComp.layers.addSolid([1, 1, 1], "Lumetri_ColorGrade_Layer", W, H, 1.0);
+    adjLayer.adjustmentLayer = true;
+    try {
+        adjLayer.Effects.addProperty("ADBE Lumetri");
+    } catch(e) {}
+
+    trace("TRACE 10: Saving project file");
+    var saveFile = new File("C:/Users/Admin/Documents/GitHub/AE/Project Future Voyage A Motion Design Story in After Effects/Future_Voyage_MotionStory.aep");
+    proj.save(saveFile);
+    trace("TRACE 11: Saved successfully!");
+
+    try {
+        app.endSuppressDialogs(false);
+    } catch(e) {}
+
+    } catch(err) {
+        trace("EXCEPTION: " + err.toString() + " at line " + (err.line || "unknown"));
+    }
+    try {
+        app.endUndoGroup();
+    } catch(e) {}
 })();

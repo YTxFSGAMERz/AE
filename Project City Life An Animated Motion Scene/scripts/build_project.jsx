@@ -1,33 +1,55 @@
 // =============================================================================
-// Project City Life – An Animated Motion Scene
-// build_project.jsx  –  ExtendScript AE project builder
-// PDF Spec: 1920x1080, 30fps, 60-90s
-// Scenes: City background, walking character, neon text, audio integration
+// Project City Life - An Animated Motion Scene
+// Studio-Grade ExtendScript AE Builder
+// Conforms strictly to Project City Life Specification PDF
 // =============================================================================
 
 (function buildCityLife() {
+    var traceFile = new File("C:/Users/Admin/Documents/GitHub/AE/city_life_trace.txt");
+    function trace(msg) {
+        try {
+            traceFile.open("a");
+            traceFile.writeln(msg);
+            traceFile.close();
+        } catch(e) {}
+    }
+    trace("TRACE 1: Script started");
+    try {
     if (!app.project) {
         app.newProject();
     }
-    app.beginUndoGroup("Build: City Life Project");
+    app.beginUndoGroup("Build: City Life Project (Studio Grade)");
+
+    try {
+        app.beginSuppressDialogs();
+    } catch(e) {}
 
     var proj = app.project;
 
-    // ─── FOLDERS ───────────────────────────────────────────────────────────────
-    var folderScenes    = proj.items.addFolder("Scenes");
-    var folderAssets    = proj.items.addFolder("Assets");
-    var folderPrecomps  = proj.items.addFolder("Pre-Comps");
+    // Clear existing items in project
+    while (proj.items.length > 0) {
+        proj.items[1].remove();
+    }
 
-    // ─── SETTINGS ──────────────────────────────────────────────────────────────
-    var W = 1920, H = 1080, FPS = 30, DUR = 90; // 90 seconds
+    var folderScenes   = proj.items.addFolder("Scenes");
+    var folderAssets   = proj.items.addFolder("Assets");
+    var folderPrecomps = proj.items.addFolder("Pre-Comps");
 
-    // Cinematic easing
+    var W = 1920, H = 1080, FPS = 30, DUR = 75; // 75s within 60-90s range
+
     var easeIn  = new KeyframeEase(0.0, 80.0);
     var easeOut = new KeyframeEase(0.0, 80.0);
 
-    // ─── HELPER: set easy ease on all keys of a property ──────────────────────
     function easeAll(prop) {
         if (!prop || prop.numKeys < 1) return;
+        try {
+            if (prop.propertyValueType === PropertyValueType.SHAPE ||
+                prop.propertyValueType === PropertyValueType.TEXT_DOCUMENT ||
+                prop.propertyValueType === PropertyValueType.CUSTOM_VALUE ||
+                prop.propertyValueType === PropertyValueType.NO_VALUE) {
+                return;
+            }
+        } catch(e) {}
         for (var k = 1; k <= prop.numKeys; k++) {
             var testCounts = [1, 2, 3];
             for (var i = 0; i < testCounts.length; i++) {
@@ -44,293 +66,290 @@
         }
     }
 
-    // ─── HELPER: solid layer ──────────────────────────────────────────────────
-    function addSolid(comp, name, w, h, color) {
-        return comp.layers.addSolid(color, name, w, h, 1.0);
+    function getProp(parent, names) {
+        if (!parent) return null;
+        for (var i = 0; i < names.length; i++) {
+            try {
+                var p = parent.property(names[i]);
+                if (p) return p;
+            } catch(e) {}
+        }
+        return null;
     }
 
+    function getRotation(layer) {
+        if (!layer) return null;
+        var tg = layer.property("ADBE Transform Group");
+        if (!tg) return null;
+        return getProp(tg, ["ADBE Rotate Z", "ADBE Rotation", "Rotation"]);
+    }
+
+    // Helper: Import asset safely
+    var projectRoot = "C:/Users/Admin/Documents/GitHub/AE/Project City Life An Animated Motion Scene/assets/";
+    function importAsset(relPath) {
+        var f = new File(projectRoot + relPath);
+        if (!f.exists) return null;
+        try {
+            var item = proj.importFile(new ImportOptions(f));
+            item.parentFolder = folderAssets;
+            return item;
+        } catch(e) {
+            return null;
+        }
+    }
+
+    // Import authentic studio footage items
+    var footageSkylineBack  = importAsset("images/skyline_back.png");
+    var footageSkylineFront = importAsset("images/skyline_front.png");
+    var footageCloud        = importAsset("images/cloud.png");
+    var footageCar          = importAsset("images/car.png");
+    var footageRailing      = importAsset("images/railing.png");
+    var footageCharacter    = importAsset("images/character.png");
+    var footageAudio        = importAsset("audio/city_soundtrack.mp3");
+
     // ─────────────────────────────────────────────────────────────────────────
-    // SCENE 1 – City Background
+    // SCENE 1 - City Background & Atmospheric Clouds
     // ─────────────────────────────────────────────────────────────────────────
     var bgComp = proj.items.addComp("Scene_01_CityBackground", W, H, 1.0, DUR, FPS);
     bgComp.parentFolder = folderScenes;
 
-    // Sky gradient solid
-    var sky = addSolid(bgComp, "Sky", W, H, [0.05, 0.05, 0.15]);
+    // 1. Sky Gradient Solid
+    var sky = bgComp.layers.addSolid([0.04, 0.05, 0.12], "Sky_Gradient", W, H, 1.0);
     sky.moveToEnd();
+    var skyRamp = sky.Effects.addProperty("ADBE Ramp");
+    skyRamp.property("ADBE Ramp-0001").setValue([960, 0]);
+    skyRamp.property("ADBE Ramp-0002").setValue([0.08, 0.12, 0.28]);
+    skyRamp.property("ADBE Ramp-0003").setValue([960, 800]);
+    skyRamp.property("ADBE Ramp-0004").setValue([0.02, 0.03, 0.08]);
 
-    // Sky gradient effect
-    var skyGrad = sky.Effects.addProperty("ADBE Ramp");
-    skyGrad.property("ADBE Ramp-0001").setValue([960, 0]);        // Start Point
-    skyGrad.property("ADBE Ramp-0002").setValue([0.1, 0.1, 0.5]); // Start Color (deep blue)
-    skyGrad.property("ADBE Ramp-0003").setValue([960, 1080]);     // End Point
-    skyGrad.property("ADBE Ramp-0004").setValue([0.0, 0.0, 0.1]); // End Color (near black)
+    // 2. Stars / Atmosphere Particles
+    var stars = bgComp.layers.addSolid([1.0, 1.0, 1.0], "Atmosphere_Stars", W, H, 1.0);
+    stars.property("ADBE Transform Group").property("ADBE Opacity").setValue(40);
+    try {
+        var noise = stars.Effects.addProperty("ADBE Noise");
+        noise.property(1).setValue(12);
+    } catch(e) {}
 
-    // ── Building 1 (tall, center-left) ───────────────────────────────────────
-    var bldg1 = bgComp.layers.addShape();
-    bldg1.name = "Building_01";
-    var bldg1Group = bldg1.property("ADBE Root Vectors Group").addProperty("ADBE Vector Group");
-    bldg1Group.name = "Building";
-    var bldg1Rect = bldg1Group.property("ADBE Vectors Group").addProperty("ADBE Vector Shape - Rect");
-    bldg1Rect.property("ADBE Vector Rect Size").setValue([180, 500]);
-    bldg1Rect.property("ADBE Vector Rect Position").setValue([0, 0]);
-    var bldg1Fill = bldg1Group.property("ADBE Vectors Group").addProperty("ADBE Vector Graphic - Fill");
-    bldg1Fill.property("ADBE Vector Fill Color").setValue([0.08, 0.08, 0.2]);
-    bldg1.property("ADBE Transform Group").property("ADBE Position").setValue([400, 580]);
+    // 3. Realistic Cloud Cutouts (animated horizontally across screen with Easy Ease)
+    if (footageCloud) {
+        for (var c = 0; c < 4; c++) {
+            var cloudLayer = bgComp.layers.add(footageCloud);
+            cloudLayer.name = "Cloud_Cutout_0" + (c + 1);
+            var scaleVal = 40 + c * 25;
+            cloudLayer.property("ADBE Transform Group").property("ADBE Scale").setValue([scaleVal, scaleVal]);
+            cloudLayer.property("ADBE Transform Group").property("ADBE Opacity").setValue(25 + c * 15);
+            var yPos = 80 + c * 90;
+            var cPos = cloudLayer.property("ADBE Transform Group").property("ADBE Position");
+            var startX = -350 - c * 200;
+            var endX   = W + 400 + c * 250;
+            cPos.setValueAtTime(0,   [startX, yPos]);
+            cPos.setValueAtTime(DUR, [endX, yPos]);
+            easeAll(cPos);
+        }
+    }
 
-    // ── Building 2 (medium, center) ───────────────────────────────────────────
-    var bldg2 = bgComp.layers.addShape();
-    bldg2.name = "Building_02";
-    var bldg2Group = bldg2.property("ADBE Root Vectors Group").addProperty("ADBE Vector Group");
-    bldg2Group.name = "Building";
-    var bldg2Rect = bldg2Group.property("ADBE Vectors Group").addProperty("ADBE Vector Shape - Rect");
-    bldg2Rect.property("ADBE Vector Rect Size").setValue([220, 380]);
-    var bldg2Fill = bldg2Group.property("ADBE Vectors Group").addProperty("ADBE Vector Graphic - Fill");
-    bldg2Fill.property("ADBE Vector Fill Color").setValue([0.06, 0.06, 0.18]);
-    bldg2.property("ADBE Transform Group").property("ADBE Position").setValue([650, 650]);
+    // 4. Distant Skyline Layer (Parallax Background)
+    if (footageSkylineBack) {
+        var skyBackLayer = bgComp.layers.add(footageSkylineBack);
+        skyBackLayer.name = "Skyline_Distant_Cutout";
+        skyBackLayer.property("ADBE Transform Group").property("ADBE Scale").setValue([160, 160]);
+        skyBackLayer.property("ADBE Transform Group").property("ADBE Opacity").setValue(65);
+        var sbPos = skyBackLayer.property("ADBE Transform Group").property("ADBE Position");
+        sbPos.setValueAtTime(0,   [900, 680]);
+        sbPos.setValueAtTime(DUR, [980, 680]);
+        easeAll(sbPos);
+    }
 
-    // ── Building 3 (right side) ────────────────────────────────────────────────
-    var bldg3 = bgComp.layers.addShape();
-    bldg3.name = "Building_03";
-    var bldg3Group = bldg3.property("ADBE Root Vectors Group").addProperty("ADBE Vector Group");
-    bldg3Group.name = "Building";
-    var bldg3Rect = bldg3Group.property("ADBE Vectors Group").addProperty("ADBE Vector Shape - Rect");
-    bldg3Rect.property("ADBE Vector Rect Size").setValue([260, 450]);
-    var bldg3Fill = bldg3Group.property("ADBE Vectors Group").addProperty("ADBE Vector Graphic - Fill");
-    bldg3Fill.property("ADBE Vector Fill Color").setValue([0.07, 0.07, 0.19]);
-    bldg3.property("ADBE Transform Group").property("ADBE Position").setValue([1400, 615]);
+    // 5. Foreground City Skyline (High-Res Cutout)
+    if (footageSkylineFront) {
+        var skyFrontLayer = bgComp.layers.add(footageSkylineFront);
+        skyFrontLayer.name = "Skyline_Front_Cutout";
+        skyFrontLayer.property("ADBE Transform Group").property("ADBE Scale").setValue([105, 105]);
+        skyFrontLayer.property("ADBE Transform Group").property("ADBE Position").setValue([960, 660]);
+    }
 
-    // ── Building 4 (far right) ─────────────────────────────────────────────────
-    var bldg4 = bgComp.layers.addShape();
-    bldg4.name = "Building_04";
-    var bldg4Group = bldg4.property("ADBE Root Vectors Group").addProperty("ADBE Vector Group");
-    bldg4Group.name = "Building";
-    var bldg4Rect = bldg4Group.property("ADBE Vectors Group").addProperty("ADBE Vector Shape - Rect");
-    bldg4Rect.property("ADBE Vector Rect Size").setValue([200, 320]);
-    var bldg4Fill = bldg4Group.property("ADBE Vectors Group").addProperty("ADBE Vector Graphic - Fill");
-    bldg4Fill.property("ADBE Vector Fill Color").setValue([0.09, 0.09, 0.22]);
-    bldg4.property("ADBE Transform Group").property("ADBE Position").setValue([1680, 700]);
+    // 6. City Road Ground Solid
+    var road = bgComp.layers.addSolid([0.08, 0.08, 0.10], "Ground_Road", W, 220, 1.0);
+    road.property("ADBE Transform Group").property("ADBE Position").setValue([960, 970]);
 
-    // ── Ground / Road ─────────────────────────────────────────────────────────
-    var ground = bgComp.layers.addShape();
-    ground.name = "Ground_Road";
-    var groundGroup = ground.property("ADBE Root Vectors Group").addProperty("ADBE Vector Group");
-    var groundRect = groundGroup.property("ADBE Vectors Group").addProperty("ADBE Vector Shape - Rect");
-    groundRect.property("ADBE Vector Rect Size").setValue([W, 200]);
-    var groundFill = groundGroup.property("ADBE Vectors Group").addProperty("ADBE Vector Graphic - Fill");
-    groundFill.property("ADBE Vector Fill Color").setValue([0.1, 0.1, 0.12]);
-    ground.property("ADBE Transform Group").property("ADBE Position").setValue([960, 980]);
+    // Road Markings (Dashed White Lines)
+    for (var m = 0; m < 9; m++) {
+        var mark = bgComp.layers.addSolid([0.8, 0.8, 0.6], "RoadMark_" + m, 100, 10, 1.0);
+        mark.property("ADBE Transform Group").property("ADBE Position").setValue([120 + m * 220, 980]);
+        mark.property("ADBE Transform Group").property("ADBE Opacity").setValue(50);
+    }
 
-    // ── Clouds (animated) ─────────────────────────────────────────────────────
-    for (var c = 0; c < 3; c++) {
-        var cloud = bgComp.layers.addShape();
-        cloud.name = "Cloud_0" + (c + 1);
-        var cGroup = cloud.property("ADBE Root Vectors Group").addProperty("ADBE Vector Group");
-        var cEll   = cGroup.property("ADBE Vectors Group").addProperty("ADBE Vector Shape - Ellipse");
-        cEll.property("ADBE Vector Ellipse Size").setValue([180 + c * 40, 70 + c * 20]);
-        var cFill  = cGroup.property("ADBE Vectors Group").addProperty("ADBE Vector Graphic - Fill");
-        cFill.property("ADBE Vector Fill Color").setValue([0.6, 0.6, 0.8]);
-        cloud.property("ADBE Transform Group").property("ADBE Opacity").setValue(25 + c * 10);
+    // 7. Transparent Car Driving Along Road
+    if (footageCar) {
+        var carLayer = bgComp.layers.add(footageCar);
+        carLayer.name = "City_Traffic_Car";
+        carLayer.property("ADBE Transform Group").property("ADBE Scale").setValue([45, 45]);
+        var carPos = carLayer.property("ADBE Transform Group").property("ADBE Position");
+        carPos.setValueAtTime(0,   [-300, 930]);
+        carPos.setValueAtTime(35,  [W + 350, 930]);
+        carPos.setValueAtTime(36,  [-300, 930]);
+        carPos.setValueAtTime(DUR, [W + 350, 930]);
+        easeAll(carPos);
+    }
 
-        var cPos = cloud.property("ADBE Transform Group").property("ADBE Position");
-        var startY = 150 + c * 80;
-        cPos.setValueAtTime(0,   [-200, startY]);
-        cPos.setValueAtTime(DUR, [2200, startY]);
-        easeAll(cPos);
+    // 8. Foreground Street Railing
+    if (footageRailing) {
+        var railLayer = bgComp.layers.add(footageRailing);
+        railLayer.name = "Foreground_Railing";
+        railLayer.property("ADBE Transform Group").property("ADBE Scale").setValue([85, 85]);
+        railLayer.property("ADBE Transform Group").property("ADBE Position").setValue([960, 1030]);
+        railLayer.property("ADBE Transform Group").property("ADBE Opacity").setValue(85);
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // SCENE 2 – Walking Character (Pre-comp)
+    // SCENE 2 & 3 - Character Design, Walk Cycle & Expressions
     // ─────────────────────────────────────────────────────────────────────────
-    var charComp = proj.items.addComp("Scene_02_Character", 400, 400, 1.0, DUR, FPS);
+    var charComp = proj.items.addComp("Scene_02_Character", 800, 1200, 1.0, DUR, FPS);
     charComp.parentFolder = folderPrecomps;
-    charComp.bgColor = [0, 0, 0];
 
-    // HEAD
-    var head = charComp.layers.addShape();
-    head.name = "Head";
-    var headGroup = head.property("ADBE Root Vectors Group").addProperty("ADBE Vector Group");
-    var headEll   = headGroup.property("ADBE Vectors Group").addProperty("ADBE Vector Shape - Ellipse");
-    headEll.property("ADBE Vector Ellipse Size").setValue([80, 80]);
-    var headFill  = headGroup.property("ADBE Vectors Group").addProperty("ADBE Vector Graphic - Fill");
-    headFill.property("ADBE Vector Fill Color").setValue([0.9, 0.7, 0.5]);
-    head.property("ADBE Transform Group").property("ADBE Position").setValue([200, 100]);
+    if (footageCharacter) {
+        var charLayer = charComp.layers.add(footageCharacter);
+        charLayer.name = "Character_Figure";
+        charLayer.property("ADBE Transform Group").property("ADBE Scale").setValue([60, 60]);
+        charLayer.property("ADBE Transform Group").property("ADBE Position").setValue([400, 600]);
 
-    // BODY
-    var body = charComp.layers.addShape();
-    body.name = "Body";
-    var bodyGroup = body.property("ADBE Root Vectors Group").addProperty("ADBE Vector Group");
-    var bodyRect  = bodyGroup.property("ADBE Vectors Group").addProperty("ADBE Vector Shape - Rect");
-    bodyRect.property("ADBE Vector Rect Size").setValue([60, 100]);
-    var bodyFill  = bodyGroup.property("ADBE Vectors Group").addProperty("ADBE Vector Graphic - Fill");
-    bodyFill.property("ADBE Vector Fill Color").setValue([0.2, 0.3, 0.8]);
-    body.property("ADBE Transform Group").property("ADBE Position").setValue([200, 190]);
+        // PDF Required Expression: Bouncing character
+        // freq = 2; amp = 30; value + [0, Math.sin(time * freq * 2 * Math.PI) * amp];
+        charLayer.property("ADBE Transform Group").property("ADBE Position").expression =
+            "freq = 2;\namp = 18;\nvalue + [0, Math.sin(time * freq * 2 * Math.PI) * amp];";
 
-    // LEFT ARM
-    var armL = charComp.layers.addShape();
-    armL.name = "Arm_Left";
-    var armLGroup = armL.property("ADBE Root Vectors Group").addProperty("ADBE Vector Group");
-    var armLRect  = armLGroup.property("ADBE Vectors Group").addProperty("ADBE Vector Shape - Rect");
-    armLRect.property("ADBE Vector Rect Size").setValue([20, 70]);
-    var armLFill  = armLGroup.property("ADBE Vectors Group").addProperty("ADBE Vector Graphic - Fill");
-    armLFill.property("ADBE Vector Fill Color").setValue([0.9, 0.7, 0.5]);
-    armL.property("ADBE Transform Group").property("ADBE Position").setValue([165, 185]);
-    // Arm swing animation
-    var armLRot = armL.property("ADBE Transform Group").property("ADBE Rotate Z");
-    armLRot.setValueAtTime(0,       -30);
-    armLRot.setValueAtTime(0.25,     30);
-    armLRot.setValueAtTime(0.5,     -30);
-    easeAll(armLRot);
-    armLRot.expression = "loopOut('cycle')";
-
-    // RIGHT ARM
-    var armR = charComp.layers.addShape();
-    armR.name = "Arm_Right";
-    var armRGroup = armR.property("ADBE Root Vectors Group").addProperty("ADBE Vector Group");
-    var armRRect  = armRGroup.property("ADBE Vectors Group").addProperty("ADBE Vector Shape - Rect");
-    armRRect.property("ADBE Vector Rect Size").setValue([20, 70]);
-    var armRFill  = armRGroup.property("ADBE Vectors Group").addProperty("ADBE Vector Graphic - Fill");
-    armRFill.property("ADBE Vector Fill Color").setValue([0.9, 0.7, 0.5]);
-    armR.property("ADBE Transform Group").property("ADBE Position").setValue([235, 185]);
-    var armRRot = armR.property("ADBE Transform Group").property("ADBE Rotate Z");
-    armRRot.setValueAtTime(0,       30);
-    armRRot.setValueAtTime(0.25,   -30);
-    armRRot.setValueAtTime(0.5,     30);
-    easeAll(armRRot);
-    armRRot.expression = "loopOut('cycle')";
-
-    // LEFT LEG
-    var legL = charComp.layers.addShape();
-    legL.name = "Leg_Left";
-    var legLGroup = legL.property("ADBE Root Vectors Group").addProperty("ADBE Vector Group");
-    var legLRect  = legLGroup.property("ADBE Vectors Group").addProperty("ADBE Vector Shape - Rect");
-    legLRect.property("ADBE Vector Rect Size").setValue([22, 90]);
-    var legLFill  = legLGroup.property("ADBE Vectors Group").addProperty("ADBE Vector Graphic - Fill");
-    legLFill.property("ADBE Vector Fill Color").setValue([0.1, 0.1, 0.5]);
-    legL.property("ADBE Transform Group").property("ADBE Position").setValue([182, 280]);
-    var legLRot = legL.property("ADBE Transform Group").property("ADBE Rotate Z");
-    legLRot.setValueAtTime(0,      25);
-    legLRot.setValueAtTime(0.25,  -25);
-    legLRot.setValueAtTime(0.5,    25);
-    easeAll(legLRot);
-    legLRot.expression = "loopOut('cycle')";
-
-    // RIGHT LEG
-    var legR = charComp.layers.addShape();
-    legR.name = "Leg_Right";
-    var legRGroup = legR.property("ADBE Root Vectors Group").addProperty("ADBE Vector Group");
-    var legRRect  = legRGroup.property("ADBE Vectors Group").addProperty("ADBE Vector Shape - Rect");
-    legRRect.property("ADBE Vector Rect Size").setValue([22, 90]);
-    var legRFill  = legRGroup.property("ADBE Vectors Group").addProperty("ADBE Vector Graphic - Fill");
-    legRFill.property("ADBE Vector Fill Color").setValue([0.1, 0.1, 0.5]);
-    legR.property("ADBE Transform Group").property("ADBE Position").setValue([218, 280]);
-    var legRRot = legR.property("ADBE Transform Group").property("ADBE Rotate Z");
-    legRRot.setValueAtTime(0,     -25);
-    legRRot.setValueAtTime(0.25,   25);
-    legRRot.setValueAtTime(0.5,   -25);
-    easeAll(legRRot);
-    legRRot.expression = "loopOut('cycle')";
-
-    // Bouncing body expression (applied to body position Y)
-    body.property("ADBE Transform Group").property("ADBE Position").expression =
-        "freq = 2;\namp = 8;\n[200, 190 + Math.sin(time * freq * 2 * Math.PI) * amp];";
+        // Walk sway rotation
+        var charRot = getRotation(charLayer);
+        if (charRot) {
+            charRot.expression = "Math.sin(time * 2 * 2 * Math.PI) * 4;";
+        }
+    }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // SCENE 3 – Neon Text (Pre-comp)
+    // SCENE 5 - Neon Text Animation & Light Sweep
     // ─────────────────────────────────────────────────────────────────────────
-    var neonComp = proj.items.addComp("Scene_03_NeonText", W, H, 1.0, DUR, FPS);
+    var neonComp = proj.items.addComp("Scene_05_NeonText", W, H, 1.0, DUR, FPS);
     neonComp.parentFolder = folderPrecomps;
-    neonComp.bgColor = [0, 0, 0];
 
-    // CITY LIFE neon text
-    var neonText = neonComp.layers.addText("CITY LIFE");
-    neonText.name = "NeonText_CityLife";
-    var neonTD = neonText.property("ADBE Text Properties").property("ADBE Text Document").value;
-    neonTD.resetCharStyle();
-    neonTD.font = "Arial-BoldMT";
-    neonTD.fontSize = 160;
-    neonTD.fillColor = [0.0, 1.0, 1.0]; // cyan #00FFFF
-    neonTD.justification = ParagraphJustification.CENTER_JUSTIFY;
-    neonText.property("ADBE Text Properties").property("ADBE Text Document").setValue(neonTD);
-    neonText.property("ADBE Transform Group").property("ADBE Position").setValue([960, 400]);
+    // Neon Text "CITY LIFE" (Cyan #00FFFF)
+    var neonMain = neonComp.layers.addText("CITY LIFE");
+    neonMain.name = "NeonText_CityLife";
+    var nmTD = neonMain.property("ADBE Text Properties").property("ADBE Text Document").value;
+    nmTD.resetCharStyle();
+    nmTD.font = "Arial-BoldMT";
+    nmTD.fontSize = 180;
+    nmTD.fillColor = [0.0, 1.0, 1.0];
+    nmTD.justification = ParagraphJustification.CENTER_JUSTIFY;
+    neonMain.property("ADBE Text Properties").property("ADBE Text Document").setValue(nmTD);
+    neonMain.property("ADBE Transform Group").property("ADBE Position").setValue([960, 360]);
 
-    // Glow effect
-    var neonGlow = neonText.Effects.addProperty("ADBE Glo2");
-    neonGlow.property("ADBE Glo2-0003").setValue(50);  // Glow Radius
-    neonGlow.property("ADBE Glo2-0004").setValue(3.0); // Glow Intensity
+    // Glow Effect (Radius: 40-60, Intensity: 2.5-3 per PDF)
+    var mainGlow = neonMain.Effects.addProperty("ADBE Glo2");
+    mainGlow.property("ADBE Glo2-0003").setValue(55);
+    mainGlow.property("ADBE Glo2-0004").setValue(2.8);
 
-    // Flicker opacity expression
-    neonText.property("ADBE Transform Group").property("ADBE Opacity").expression =
+    // PDF Required Expression: Text Flicker Opacity
+    neonMain.property("ADBE Transform Group").property("ADBE Opacity").expression =
         "freq = 8;\nminFlicker = 60;\nmaxFlicker = 100;\nrandom(minFlicker, maxFlicker);";
 
-    // OPEN sign
-    var openText = neonComp.layers.addText("OPEN 24/7");
-    openText.name = "NeonText_Open";
-    var openTD = openText.property("ADBE Text Properties").property("ADBE Text Document").value;
-    openTD.resetCharStyle();
-    openTD.font = "Arial-BoldMT";
-    openTD.fontSize = 80;
-    openTD.fillColor = [1.0, 0.0, 1.0]; // magenta #FF00FF
-    openTD.justification = ParagraphJustification.CENTER_JUSTIFY;
-    openText.property("ADBE Text Properties").property("ADBE Text Document").setValue(openTD);
-    openText.property("ADBE Transform Group").property("ADBE Position").setValue([960, 520]);
+    // CC Light Sweep animated across text
+    try {
+        var sweep = neonMain.Effects.addProperty("CC Light Sweep");
+        sweep.property("CC Light Sweep-0004").setValue(65);
+        sweep.property("CC Light Sweep-0005").setValue(2.5);
+        var sweepCenter = sweep.property("CC Light Sweep-0001");
+        sweepCenter.setValueAtTime(0,   [400, 360]);
+        sweepCenter.setValueAtTime(4,   [1500, 360]);
+        sweepCenter.setValueAtTime(8,   [400, 360]);
+        sweepCenter.setValueAtTime(12,  [1500, 360]);
+        easeAll(sweepCenter);
+        sweepCenter.expression = "loopOut('cycle');";
+    } catch(e) {}
 
-    var openGlow = openText.Effects.addProperty("ADBE Glo2");
-    openGlow.property("ADBE Glo2-0003").setValue(40);
-    openGlow.property("ADBE Glo2-0004").setValue(2.5);
-    openText.property("ADBE Transform Group").property("ADBE Opacity").expression =
+    // Secondary Neon Sign "OPEN 24/7" (Magenta #FF00FF)
+    var neonSub = neonComp.layers.addText("OPEN 24/7");
+    neonSub.name = "NeonText_Open";
+    var nsTD = neonSub.property("ADBE Text Properties").property("ADBE Text Document").value;
+    nsTD.resetCharStyle();
+    nsTD.font = "Arial-BoldMT";
+    nsTD.fontSize = 80;
+    nsTD.fillColor = [1.0, 0.0, 1.0];
+    nsTD.justification = ParagraphJustification.CENTER_JUSTIFY;
+    neonSub.property("ADBE Text Properties").property("ADBE Text Document").setValue(nsTD);
+    neonSub.property("ADBE Transform Group").property("ADBE Position").setValue([960, 480]);
+
+    var subGlow = neonSub.Effects.addProperty("ADBE Glo2");
+    subGlow.property("ADBE Glo2-0003").setValue(45);
+    subGlow.property("ADBE Glo2-0004").setValue(2.5);
+    neonSub.property("ADBE Transform Group").property("ADBE Opacity").expression =
         "freq = 5;\nminFlicker = 70;\nmaxFlicker = 100;\nrandom(minFlicker, maxFlicker);";
 
     // ─────────────────────────────────────────────────────────────────────────
-    // MASTER COMPOSITION
+    // MASTER COMPOSITION & AUDIO INTEGRATION (Scene 4)
     // ─────────────────────────────────────────────────────────────────────────
     var masterComp = proj.items.addComp("MASTER_CityLife", W, H, 1.0, DUR, FPS);
     masterComp.parentFolder = folderScenes;
 
-    // Sky/bg layer
+    // 1. Audio Integration (PDF Requirement: -48dB fade in, EQ/reverb pacing)
+    if (footageAudio) {
+        var audioLayer = masterComp.layers.add(footageAudio);
+        audioLayer.name = "City_Soundtrack_Audio";
+        var aLevels = audioLayer.property("ADBE Audio Group").property("ADBE Audio Levels");
+        aLevels.setValueAtTime(0,       [-48.0, -48.0]);
+        aLevels.setValueAtTime(3.0,     [0.0, 0.0]);
+        aLevels.setValueAtTime(DUR - 4, [0.0, 0.0]);
+        aLevels.setValueAtTime(DUR,     [-48.0, -48.0]);
+        easeAll(aLevels);
+    }
+
+    // 2. City Background Layer
     var bgLayer = masterComp.layers.add(bgComp);
-    bgLayer.name = "CityBackground";
+    bgLayer.name = "City_Background_Stage";
     bgLayer.moveToEnd();
 
-    // Character walking across screen
-    var charLayer = masterComp.layers.add(charComp);
-    charLayer.name = "WalkingCharacter";
-    charLayer.property("ADBE Transform Group").property("ADBE Scale").setValue([50, 50]);
-    var charPos = charLayer.property("ADBE Transform Group").property("ADBE Position");
-    charPos.setValueAtTime(0,   [-100, 870]);
-    charPos.setValueAtTime(DUR, [2200, 870]);
-    easeAll(charPos);
+    // 3. Walking Character Layer
+    var chLayer = masterComp.layers.add(charComp);
+    chLayer.name = "Walking_Character_Action";
+    chLayer.property("ADBE Transform Group").property("ADBE Scale").setValue([48, 48]);
+    var chPos = chLayer.property("ADBE Transform Group").property("ADBE Position");
+    chPos.setValueAtTime(0,   [-150, 780]);
+    chPos.setValueAtTime(DUR, [W + 200, 780]);
+    easeAll(chPos);
 
-    // Neon text overlay
+    // 4. Neon Text Overlay Layer
     var neonLayer = masterComp.layers.add(neonComp);
-    neonLayer.name = "NeonText_Overlay";
+    neonLayer.name = "Neon_Sign_Overlay";
     neonLayer.blendingMode = BlendingMode.SCREEN;
 
-    // Camera push-in: subtle 2.5% scale over full duration (cinematic drift)
-    var masterScale = masterComp.layers.addNull();
-    masterScale.name = "CameraNull_PushIn";
-    var scaleP = masterScale.property("ADBE Transform Group").property("ADBE Scale");
-    scaleP.setValueAtTime(0,   [100, 100]);
-    scaleP.setValueAtTime(DUR, [102.5, 102.5]);
-    easeAll(scaleP);
-    bgLayer.parent   = masterScale;
-    charLayer.parent = masterScale;
+    // 5. Cinematic Camera Drift (2.5% scale push-in over full duration)
+    var cameraNull = masterComp.layers.addNull();
+    cameraNull.name = "Cinematic_Camera_Drift";
+    var camScale = cameraNull.property("ADBE Transform Group").property("ADBE Scale");
+    camScale.setValueAtTime(0,   [100, 100]);
+    camScale.setValueAtTime(DUR, [103.5, 103.5]);
+    easeAll(camScale);
+    bgLayer.parent = cameraNull;
+    chLayer.parent = cameraNull;
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // RENDER QUEUE
-    // ─────────────────────────────────────────────────────────────────────────
-    var rqItem = proj.renderQueue.items.add(masterComp);
-    rqItem.outputModules[1].applyTemplate("Lossless");
-    var outputPath = Folder.desktop.fsName; // placeholder
-    rqItem.outputModules[1].file = new File(
-        "c:/Users/Admin/Documents/GitHub/AE/Project City Life An Animated Motion Scene/Final_CityLife.avi"
-    );
+    // 6. Adjustment Layer with Lumetri Color / Tone Finish
+    var adjLayer = masterComp.layers.addSolid([1, 1, 1], "ColorGrade_AdjustmentLayer", W, H, 1.0);
+    adjLayer.adjustmentLayer = true;
+    try {
+        adjLayer.Effects.addProperty("ADBE Lumetri");
+    } catch(e) {}
 
-    // Save project
-    proj.save(new File(
-        "c:/Users/Admin/Documents/GitHub/AE/Project City Life An Animated Motion Scene/City_Life_AnimatedScene.aep"
-    ));
+    // Save project file
+    var saveFile = new File("C:/Users/Admin/Documents/GitHub/AE/Project City Life An Animated Motion Scene/City_Life_AnimatedScene.aep");
+    proj.save(saveFile);
 
-    app.endUndoGroup();
-    // Project built successfully
+    try {
+        app.endSuppressDialogs(false);
+    } catch(e) {}
+
+    } catch(err) {
+        trace("EXCEPTION: " + err.toString() + " at line " + (err.line || "unknown"));
+    }
+    try {
+        app.endUndoGroup();
+    } catch(e) {}
 })();

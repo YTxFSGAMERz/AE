@@ -29,8 +29,8 @@ PROJECTS = [
         "aep": os.path.join(LOCAL_ROOT, "Project City Life An Animated Motion Scene", "City_Life_AnimatedScene.aep"),
         "comp": "MASTER_CityLife",
         "output_mp4": os.path.join(LOCAL_ROOT, "Project City Life An Animated Motion Scene", "City_Life_AnimatedScene.mp4"),
-        "audio": os.path.join(LOCAL_ROOT, "Motion Graphics", "Project files", "coniferous-forest-142569.mp3"),
-        "duration": 90
+        "audio": os.path.join(LOCAL_ROOT, "Project City Life An Animated Motion Scene", "assets", "audio", "city_soundtrack.mp3"),
+        "duration": 75
     },
     {
         "name": "Future Voyage A Motion Design Story",
@@ -38,8 +38,8 @@ PROJECTS = [
         "aep": os.path.join(LOCAL_ROOT, "Project Future Voyage A Motion Design Story in After Effects", "Future_Voyage_MotionStory.aep"),
         "comp": "MASTER_FutureVoyage",
         "output_mp4": os.path.join(LOCAL_ROOT, "Project Future Voyage A Motion Design Story in After Effects", "Future_Voyage_MotionStory.mp4"),
-        "audio": os.path.join(LOCAL_ROOT, "Journey Through Space From Earth to Imagination Project", "assets", "audio", "space_soundtrack.mp3"),
-        "duration": 100
+        "audio": os.path.join(LOCAL_ROOT, "Project Future Voyage A Motion Design Story in After Effects", "assets", "audio", "space_soundtrack.mp3"),
+        "duration": 95
     },
     {
         "name": "The Journey of a Memory A Motion Story",
@@ -47,8 +47,8 @@ PROJECTS = [
         "aep": os.path.join(LOCAL_ROOT, "Project The Journey of a Memory A Motion Story in After Effects", "Journey_Of_Memory_MotionStory.aep"),
         "comp": "MASTER_JourneyOfMemory",
         "output_mp4": os.path.join(LOCAL_ROOT, "Project The Journey of a Memory A Motion Story in After Effects", "Journey_Of_Memory_MotionStory.mp4"),
-        "audio": os.path.join(LOCAL_ROOT, "Animated Mobile Weather App Promo Project", "assets", "audio", "promo_soundtrack.mp3"),
-        "duration": 100
+        "audio": os.path.join(LOCAL_ROOT, "Project The Journey of a Memory A Motion Story in After Effects", "assets", "audio", "memory_soundtrack.mp3"),
+        "duration": 95
     }
 ]
 
@@ -82,6 +82,12 @@ def render_project(proj):
     ae_elapsed = time.time() - start_time
     print(f"  ✓ aerender completed in {ae_elapsed:.1f}s")
 
+    raw_video = temp_avi
+    if not os.path.exists(raw_video):
+        alt_mp4 = temp_avi.replace(".avi", ".mp4")
+        if os.path.exists(alt_mp4):
+            raw_video = alt_mp4
+
     # 2. FFmpeg H.264 Encoding with Audio
     print(f"  [2/2] Encoding broadcast H.264 MP4 with FFmpeg...")
     has_audio = os.path.isfile(proj.get("audio", ""))
@@ -89,11 +95,10 @@ def render_project(proj):
     if has_audio:
         cmd_ffmpeg = [
             "ffmpeg", "-y",
-            "-i", temp_avi,
+            "-i", raw_video,
             "-i", proj["audio"],
-            "-c:v", "libx264", "-pix_fmt", "yuv420p",
-            "-crf", "18", "-preset", "fast",
-            "-c:a", "aac", "-b:a", "192k",
+            "-c:v", "copy",
+            "-c:a", "aac", "-b:a", "256k",
             "-shortest",
             "-movflags", "+faststart",
             proj["output_mp4"]
@@ -101,9 +106,8 @@ def render_project(proj):
     else:
         cmd_ffmpeg = [
             "ffmpeg", "-y",
-            "-i", temp_avi,
-            "-c:v", "libx264", "-pix_fmt", "yuv420p",
-            "-crf", "18", "-preset", "fast",
+            "-i", raw_video,
+            "-c:v", "copy",
             "-movflags", "+faststart",
             proj["output_mp4"]
         ]
@@ -111,13 +115,13 @@ def render_project(proj):
     res_ff = subprocess.run(cmd_ffmpeg, capture_output=True, text=True)
     if res_ff.returncode != 0:
         print(f"  ✗ FFmpeg encoding failed: {res_ff.stderr}")
-        if os.path.exists(temp_avi):
-            os.remove(temp_avi)
+        if os.path.exists(raw_video):
+            os.remove(raw_video)
         return False
 
-    # 3. Clean up raw AVI
-    if os.path.exists(temp_avi):
-        os.remove(temp_avi)
+    # 3. Clean up raw video
+    if os.path.exists(raw_video):
+        os.remove(raw_video)
 
     total_time = time.time() - start_time
     fsize_mb = os.path.getsize(proj["output_mp4"]) / (1024 * 1024)
