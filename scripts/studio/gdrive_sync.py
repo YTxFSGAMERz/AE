@@ -65,9 +65,17 @@ def normalize_path(rel_path):
     """Normalize relative path to POSIX forward slashes."""
     return rel_path.replace("\\", "/").strip("/")
 
+def get_gdrive_command():
+    """Resolve gdrive CLI, prioritizing Antigravity's authenticated plugin proxy."""
+    lang_server = os.path.expandvars(r"%LOCALAPPDATA%\Programs\antigravity\resources\bin\language_server.exe")
+    if os.path.isfile(lang_server):
+        return f'"{lang_server}" plugin-cli gdrive'
+    return "gdrive"
+
 def run_gdrive(cmd_args, retries=3):
     """Run gdrive CLI with Windows shell compatibility and exponential backoff retry."""
-    cmd_str = "gdrive " + " ".join(f'"{a}"' if " " in a else a for a in cmd_args)
+    prefix = get_gdrive_command()
+    cmd_str = prefix + " " + " ".join(f'"{a}"' if " " in a else a for a in cmd_args)
     err = ""
     for attempt in range(retries):
         try:
