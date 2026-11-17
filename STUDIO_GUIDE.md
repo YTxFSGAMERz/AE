@@ -162,3 +162,23 @@ python studio.py process-render weather --vertical --burn-subs
 # Split an AE project render into highlight clips using PySceneDetect
 python studio.py process-render weather --split
 ```
+
+### 7. Google Drive Auto-Sync (Automatic with Git Push)
+Whenever you push commits to GitHub, the repository automatically syncs your modified files to Google Drive ([`My Drive > AE`](https://drive.google.com/drive/u/1/folders/18jb20pW3S-KNLwWrvanW9UChR7b9WCg_)).
+
+```bash
+# Automatic on push (pre-push hook)
+git push
+
+# Manual high-speed delta sync (detects unpushed/modified files in ~3s)
+python studio.py sync
+# or using npm
+npm run sync
+
+# Full cache-assisted repository audit
+python studio.py sync --full
+
+# Re-install or check the git pre-push hook
+python studio.py sync --install-hook
+```
+

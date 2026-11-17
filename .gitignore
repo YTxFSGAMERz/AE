@@ -28,4 +28,8 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Google Drive Sync Cache
+.gdrive_sync_cache.json
+.gdrive_cache*.json
+
 

@@ -7,6 +7,9 @@
   "scripts": {
     "status": "python studio.py status",
     "doctor": "hyperframes doctor",
+    "sync": "python studio.py sync",
+    "sync:full": "python studio.py sync --full",
+    "sync:hook": "python studio.py sync --install-hook",
     "remotion:studio": "remotion studio remotion/src/index.ts",
     "remotion:render": "remotion render remotion/src/index.ts",
     "remotion:compositions": "remotion compositions remotion/src/index.ts",

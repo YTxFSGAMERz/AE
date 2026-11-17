@@ -388,6 +388,23 @@ def cmd_kinetic_subs(args):
         bg_transparent=not args.opaque
     )
 
+def cmd_sync(args):
+    """Synchronize AE repository to Google Drive."""
+    sync_script = STUDIO_ROOT / "scripts" / "studio" / "gdrive_sync.py"
+    cmd = [sys.executable, str(sync_script)]
+    if args.install_hook:
+        cmd.append("--install-hook")
+    elif args.uninstall_hook:
+        cmd.append("--uninstall-hook")
+    elif args.file:
+        cmd.extend(["--file", args.file])
+    elif args.full:
+        cmd.append("--full")
+    else:
+        cmd.append("--git")
+    
+    subprocess.run(cmd, check=False)
+
 def main():
     parser = argparse.ArgumentParser(
         description="🎬 Video Editing Studio - Unified CLI with AE Cross-Folder Communication",
@@ -399,6 +416,13 @@ def main():
     subparsers.add_parser("status", help="Check studio tools, environment health, and AE projects")
     subparsers.add_parser("doctor", help="Check studio tools and environment health")
     subparsers.add_parser("projects", help="List all discovered AE project folders with renders and assets")
+
+    # Sync to Google Drive
+    sync_p = subparsers.add_parser("sync", help="Synchronize AE repository to Google Drive (git-aware delta or full)")
+    sync_p.add_argument("--full", action="store_true", help="Perform full cache-assisted tree sync")
+    sync_p.add_argument("--file", default=None, help="Sync a specific file relative to AE root")
+    sync_p.add_argument("--install-hook", action="store_true", help="Install git pre-push hook for automatic sync on push")
+    sync_p.add_argument("--uninstall-hook", action="store_true", help="Uninstall git pre-push hook")
 
     # Download (with AE delivery)
     dl_p = subparsers.add_parser("download", help="Download video/audio from URL using yt-dlp")
@@ -538,6 +562,7 @@ def main():
         "status": cmd_status,
         "doctor": cmd_status,
         "projects": cmd_projects,
+        "sync": cmd_sync,
         "download": cmd_download,
         "transcribe": cmd_transcribe,
         "sync-markers": cmd_sync_markers,
