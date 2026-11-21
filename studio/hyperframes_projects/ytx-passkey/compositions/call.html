@@ -1,0 +1,151 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; overflow: hidden; background: #f3efe6; font-family: Roboto, sans-serif; color: #16130f; }
+    .sheet { position: absolute; left: 200px; top: 160px; width: 1480px; height: 720px; background: #f3efe6; border: 4px solid #16130f; box-shadow: 10px 10px 0 #16130f; }
+    .head { position: absolute; left: 200px; top: 160px; width: 1480px; height: 88px; background: #16130f; color: #f3efe6; font-size: 36px; font-weight: 700; display: flex; align-items: center; padding: 0 40px; }
+    .big { position: absolute; left: 250px; top: 420px; width: 1380px; font-size: 64px; font-weight: 700; letter-spacing: -0.035em; line-height: 1.12; }
+    .col { position: absolute; top: 150px; width: 740px; height: 620px; border: 4px solid #16130f; background: #f3efe6; box-shadow: 10px 10px 0 #16130f; }
+    .col h2 { height: 72px; background: #16130f; color: #f3efe6; font-size: 32px; font-weight: 700; display: flex; align-items: center; padding: 0 28px; }
+    .phone, .page, .env, .empty, .keyrow { opacity: 0; }
+    .phone { position: absolute; left: 28px; top: 96px; display: flex; align-items: center; gap: 20px; }
+    .phone .say { font-size: 36px; font-weight: 700; }
+    .phone .who { font-size: 28px; color: #6b645c; margin-top: 4px; }
+    .page { position: absolute; left: 28px; top: 220px; width: 680px; height: 170px; border: 3px dashed #16130f; }
+    .page .bar { height: 44px; background: #16130f; color: #f3efe6; font-size: 28px; font-weight: 700; display: flex; align-items: center; padding: 0 16px; }
+    .page .btn { position: absolute; left: 18px; top: 64px; height: 48px; padding: 0 16px; border: 3px solid #16130f; font-size: 28px; font-weight: 700; display: flex; align-items: center; }
+    .page .cap { position: absolute; left: 18px; top: 126px; font-size: 28px; color: #6b645c; }
+    .env { position: absolute; left: 28px; top: 420px; width: 680px; height: 150px; border: 3px solid #16130f; }
+    .env .flap { height: 8px; background: #16130f; }
+    .env .body { padding: 18px 22px 0; font-size: 32px; font-weight: 700; }
+    .env .sub { padding: 6px 22px 0; font-size: 28px; color: #6b645c; }
+    .empty { position: absolute; left: 28px; top: 120px; width: 680px; font-size: 36px; font-weight: 500; }
+    .keyrow { position: absolute; left: 28px; top: 110px; width: 680px; height: 130px; background: #f3ddc8; border: 3px solid #16130f; display: flex; align-items: center; gap: 18px; padding: 0 22px; }
+    .strip { position: absolute; left: 0; top: 0; width: 10px; height: 130px; background: #c45c12; }
+    .keyrow .t { font-size: 32px; font-weight: 700; }
+    .keyrow .s { font-size: 28px; margin-top: 4px; }
+    svg.key { width: 64px; height: 64px; flex: none; }
+    .tell { position: absolute; left: 160px; top: 820px; width: 1560px; height: 120px; border: 4px solid #16130f; background: #f3efe6; box-shadow: 10px 10px 0 #16130f; }
+    .tell .phrase { position: absolute; left: 28px; top: 28px; width: 1100px; font-size: 32px; font-weight: 700; line-height: 1.25; }
+    .tell .hit { position: absolute; left: 28px; top: 78px; width: 470px; height: 4px; background: #16130f; transform: scaleX(0); transform-origin: left center; }
+    .tell .close { position: absolute; right: 28px; top: 36px; font-size: 36px; font-weight: 700; }
+    .note { position: absolute; left: 180px; top: 100px; font-size: 28px; color: #6b645c; }
+  </style>
+  <div id="root" data-composition-id="call" data-width="1920" data-height="1080">
+    <div id="call-setup-sheet" class="clip" data-beat="call_why" data-until="call_it" data-start="0" data-duration="44.77" data-track-index="0">
+      <div class="sheet"></div>
+      <div class="head">The call moved</div>
+    </div>
+    <div id="call-why" class="clip" data-beat="call_why" data-until="call_moved" data-start="0" data-duration="4.14" data-track-index="1">
+      <div class="big">The fake login got harder.</div>
+    </div>
+    <div id="call-moved" class="clip" data-beat="call_moved" data-until="call_button" data-start="4.14" data-duration="6.11" data-track-index="1">
+      <div class="big">They ask you to enroll a key.</div>
+    </div>
+    <div id="call-button" class="clip" data-beat="call_button" data-until="call_okta" data-start="10.25" data-duration="8.78" data-track-index="1">
+      <div class="big">A real button. Pressed by you.</div>
+      <div style="position:absolute;left:250px;top:620px;height:72px;padding:0 22px;border:4px solid #16130f;background:#f3efe6;font-size:32px;font-weight:700;display:flex;align-items:center">Add a passkey</div>
+    </div>
+    <div id="call-okta" class="clip" data-beat="call_okta" data-until="call_targets" data-start="19.03" data-duration="14.76" data-track-index="1">
+      <div class="big">Okta, 5 July 2026.<br>Data extortion.</div>
+    </div>
+    <div id="call-targets" class="clip" data-beat="call_targets" data-until="call_it" data-start="33.79" data-duration="10.98" data-track-index="1">
+      <div class="big">Companies. Not a bedroom PC.</div>
+      <div id="inds" style="position:absolute;left:250px;top:640px;width:1400px;font-size:32px;font-weight:700">
+        <span class="ind" id="i1" style="opacity:0;margin-right:28px">Food</span>
+        <span class="ind" id="i2" style="opacity:0;margin-right:28px">Technology</span>
+        <span class="ind" id="i3" style="opacity:0;margin-right:28px">Healthcare</span>
+        <span class="ind" id="i4" style="opacity:0;margin-right:28px">Cars</span>
+        <span class="ind" id="i5" style="opacity:0;margin-right:28px">Construction</span>
+        <span class="ind" id="i6" style="opacity:0;margin-right:28px">Aviation</span>
+      </div>
+    </div>
+
+    <div id="call-note-clip" class="clip" data-beat="call_it" data-until="SCENE_END" data-start="44.77" data-duration="55.99" data-track-index="2">
+      <div class="note">Okta, 5 July 2026 · companies, not a bedroom PC</div>
+    </div>
+    <div id="call-left" class="clip" data-beat="call_it" data-until="SCENE_END" data-start="44.77" data-duration="55.99" data-track-index="3">
+      <div class="col" id="col-left" style="left: 160px">
+        <h2>What they see</h2>
+        <div class="phone" id="c-phone">
+          <svg width="64" height="64" viewBox="0 0 72 72" fill="none">
+            <rect x="20" y="4" width="32" height="64" stroke="#16130f" stroke-width="4"/>
+            <rect x="28" y="12" width="16" height="6" fill="#16130f"/>
+            <rect x="26" y="52" width="20" height="6" fill="#16130f"/>
+          </svg>
+          <div>
+            <div class="say">Register a passkey.</div>
+            <div class="who">A voice that says it is IT.</div>
+          </div>
+        </div>
+        <div class="page" id="c-page">
+          <div class="bar">Account security</div>
+          <div class="btn">Add a passkey</div>
+          <div class="cap">The page the voice opened.</div>
+        </div>
+        <div class="env" id="c-env">
+          <div class="flap"></div>
+          <div class="body">A new passkey was added.</div>
+          <div class="sub" id="c-env-sub">It reads like a receipt.</div>
+          <div class="sub" id="c-env-real" style="opacity: 0">The sender can be real.</div>
+        </div>
+      </div>
+    </div>
+    <div id="call-right" class="clip" data-beat="call_it" data-until="SCENE_END" data-start="44.77" data-duration="55.99" data-track-index="4">
+      <div class="col" id="col-right" style="left: 980px">
+        <h2>The real account</h2>
+        <div class="empty" id="r-empty">Nothing of theirs, yet.</div>
+        <div class="keyrow" id="r-key">
+          <div class="strip"></div>
+          <svg class="key" viewBox="0 0 84 84" fill="none">
+            <circle cx="30" cy="32" r="16" stroke="#c45c12" stroke-width="4"/>
+            <circle cx="30" cy="32" r="5" fill="#c45c12"/>
+            <path d="M44 32 H72 V40 H64 V48 H56 V40 H48 V32" stroke="#c45c12" stroke-width="4" fill="none"/>
+          </svg>
+          <div>
+            <div class="t">Their key</div>
+            <div class="s">Added just now · not this one</div>
+          </div>
+        </div>
+        <div class="env" id="r-env">
+          <div class="flap"></div>
+          <div class="body">A new passkey was added.</div>
+          <div class="sub">The key on the account is theirs.</div>
+        </div>
+      </div>
+    </div>
+    <div id="call-tell-clip" class="clip" data-beat="call_phrase" data-until="call_hold" data-start="85" data-duration="8.26" data-track-index="5">
+      <div class="tell">
+        <div class="phrase">Write down a recovery phrase</div>
+        <div class="hit" id="call-hit"></div>
+        <div class="close">Close it.</div>
+      </div>
+    </div>
+    <div id="call-hold-clip" class="clip" data-beat="call_hold" data-until="SCENE_END" data-start="93.26" data-duration="7.5" data-track-index="5">
+      <div class="tell">
+        <div class="phrase">A real enrollment can wait.</div>
+        <div class="close">Hang up.</div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const B = {call_why: 0.0, call_moved: 4.14, call_button: 10.25, call_okta: 19.03, call_targets: 33.79, call_it: 44.77, call_page: 51.67, call_mail: 59.11, call_careful: 65.66, call_sender: 74.44, call_phrase: 85.0, call_hold: 93.26};
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#col-left", { x: -40 }, { x: 0, duration: 0.5, ease: "expo.out", immediateRender: false }, B.call_it);
+    tl.fromTo("#col-right", { x: 40 }, { x: 0, duration: 0.5, ease: "expo.out", immediateRender: false }, B.call_it);
+    tl.to("#c-phone", { opacity: 1, duration: 0.35, ease: "power3.out" }, B.call_it);
+    tl.to("#r-empty", { opacity: 1, duration: 0.35, ease: "power3.out" }, B.call_it);
+    tl.to("#c-page", { opacity: 1, duration: 0.35, ease: "power3.out" }, B.call_page);
+    tl.fromTo("#r-key", { x: 80, opacity: 0 }, { x: 0, opacity: 1, duration: 0.45, ease: "power2.out", immediateRender: false }, B.call_page);
+    tl.to("#r-empty", { opacity: 0, duration: 0.2 }, B.call_page + 0.4);
+    const indSpan = (B.call_it - B.call_targets) / 7;
+    ["#i1", "#i2", "#i3", "#i4", "#i5", "#i6"].forEach(function (id, n) {
+      tl.fromTo(id, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out", immediateRender: false }, B.call_targets + indSpan * (n + 1));
+    });
+    tl.to("#c-env", { opacity: 1, duration: 0.35, ease: "power3.out" }, B.call_mail);
+    tl.to("#r-env", { opacity: 1, duration: 0.35, ease: "power3.out" }, B.call_mail);
+    tl.to("#c-env-sub", { opacity: 0, duration: 0.25 }, B.call_sender);
+    tl.to("#c-env-real", { opacity: 1, duration: 0.35 }, B.call_sender);
+    tl.fromTo("#call-hit", { scaleX: 0 }, { scaleX: 1, duration: Math.max(1.2, (B.call_hold - B.call_phrase) * 0.65), ease: "none", immediateRender: false }, B.call_phrase);
+    window.__timelines["call"] = tl;
+  </script>
+</template>

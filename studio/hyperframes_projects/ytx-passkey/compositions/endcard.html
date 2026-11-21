@@ -1,0 +1,30 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; overflow: hidden; background: #f3efe6; font-family: Roboto, sans-serif; color: #16130f; }
+    .line { position: absolute; left: 180px; top: 200px; width: 1560px; font-size: 52px; font-weight: 700; letter-spacing: -0.035em; line-height: 1.2; }
+    .line span { display: inline-block; opacity: 0; }
+    .name { position: absolute; left: 180px; top: 620px; font-size: 56px; font-weight: 700; letter-spacing: -0.03em; opacity: 0; }
+    .rule { position: absolute; left: 180px; top: 700px; width: 220px; height: 8px; background: #c45c12; transform-origin: left center; }
+  </style>
+  <div id="root" data-composition-id="endcard" data-width="1920" data-height="1080">
+    <div id="end-line" class="clip" data-beat="end_line" data-until="SCENE_END" data-start="0" data-duration="8.68" data-track-index="0">
+      <div class="line"><span id="end-a">A password can be typed into the wrong page.</span><br><span id="end-b">A passkey can't.</span><br><span id="end-c">The call is the part that still works.</span></div>
+    </div>
+    <div id="end-id" class="clip" data-beat="end_name" data-until="SCENE_END" data-start="3.77" data-duration="4.91" data-track-index="1">
+      <div>
+        <div class="name" id="end-name">YTxFSGAMERz</div>
+        <div class="rule" id="end-rule"></div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const B = {end_line: 0.0, end_name: 3.77, end_rule: 4.05};
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#end-a", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out", immediateRender: false }, 0.05);
+    tl.fromTo("#end-b", { opacity: 0, scale: 0.94 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(1.4)", immediateRender: false }, 0.55);
+    tl.fromTo("#end-c", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out", immediateRender: false }, 1.05);
+    tl.fromTo("#end-name", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out", immediateRender: false }, B.end_name);
+    tl.fromTo("#end-rule", { scaleX: 0 }, { scaleX: 1, duration: 0.4, ease: "power2.out", immediateRender: false }, B.end_rule);
+    window.__timelines["endcard"] = tl;
+  </script>
+</template>

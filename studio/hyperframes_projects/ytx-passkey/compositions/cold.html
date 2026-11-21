@@ -1,0 +1,70 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; overflow: hidden; background: #f3efe6; font-family: Roboto, sans-serif; color: #16130f; }
+    .sheet { position: absolute; left: 200px; top: 140px; width: 1480px; height: 760px; background: #f3efe6; border: 4px solid #16130f; box-shadow: 10px 10px 0 #16130f; }
+    .head { position: absolute; left: 200px; top: 140px; width: 1480px; height: 88px; background: #16130f; display: flex; align-items: center; justify-content: space-between; padding: 0 40px; }
+    .head h1 { font-size: 36px; font-weight: 700; color: #f3efe6; }
+    .head .ch { font-size: 28px; font-weight: 500; color: #f3efe6; }
+    .title { position: absolute; left: 260px; top: 340px; width: 1360px; font-size: 64px; font-weight: 700; letter-spacing: -0.04em; }
+    .row { position: absolute; left: 260px; top: 340px; width: 1360px; height: 130px; border: 3px solid #16130f; display: flex; align-items: center; gap: 24px; padding: 0 32px; background: #f3efe6; opacity: 0; }
+    .row.amber { top: 500px; background: #f3ddc8; }
+    .bar { position: absolute; left: 0; top: 0; width: 10px; height: 130px; background: #c45c12; }
+    .t { font-size: 36px; font-weight: 700; letter-spacing: -0.02em; }
+    .s { font-size: 28px; color: #16130f; margin-top: 4px; }
+    .hook { position: absolute; left: 260px; top: 680px; width: 1360px; font-size: 40px; font-weight: 700; letter-spacing: -0.03em; }
+    #hook-a, #hook-b { display: inline-block; opacity: 0; }
+    svg.key { width: 72px; height: 72px; flex: none; }
+  </style>
+  <div id="root" data-composition-id="cold" data-width="1920" data-height="1080">
+    <div id="cold-sheet" class="clip" data-beat="cold_ask" data-until="SCENE_END" data-start="0" data-duration="6.72" data-track-index="0">
+      <div class="sheet"></div>
+      <div class="head">
+        <h1>Account security</h1>
+        <div class="ch">A Windows PC</div>
+      </div>
+    </div>
+    <div id="cold-title-clip" class="clip" data-beat="cold_ask" data-until="cold_hook" data-start="0" data-duration="3.31" data-track-index="1">
+      <div id="cold-title" class="title">Are passkeys actually safe?</div>
+    </div>
+    <div id="cold-yours-clip" class="clip" data-beat="cold_hook" data-until="SCENE_END" data-start="3.31" data-duration="3.41" data-track-index="2">
+      <div id="cold-yours" class="row">
+        <svg class="key" viewBox="0 0 84 84" fill="none">
+          <circle cx="30" cy="32" r="16" stroke="#16130f" stroke-width="4"/>
+          <circle cx="30" cy="32" r="5" fill="#16130f"/>
+          <path d="M44 32 H72 V40 H64 V48 H56 V40 H48 V32" stroke="#16130f" stroke-width="4" fill="none"/>
+        </svg>
+        <div>
+          <div class="t">This PC</div>
+          <div class="s">Yours</div>
+        </div>
+      </div>
+    </div>
+    <div id="cold-other" class="clip" data-beat="cold_hook" data-until="SCENE_END" data-start="3.31" data-duration="3.41" data-track-index="3">
+      <div id="cold-row" class="row amber">
+        <div class="bar"></div>
+        <svg class="key" viewBox="0 0 84 84" fill="none">
+          <circle cx="30" cy="32" r="16" stroke="#c45c12" stroke-width="4"/>
+          <circle cx="30" cy="32" r="5" fill="#c45c12"/>
+          <path d="M44 32 H72 V40 H64 V48 H56 V40 H48 V32" stroke="#c45c12" stroke-width="4" fill="none"/>
+        </svg>
+        <div>
+          <div class="t">Windows PC</div>
+          <div class="s">Added just now · not this one</div>
+        </div>
+      </div>
+    </div>
+    <div id="cold-hook" class="clip" data-beat="cold_hook" data-until="SCENE_END" data-start="3.31" data-duration="3.41" data-track-index="4">
+      <div class="hook"><span id="hook-a">The passkey worked.</span><br><span id="hook-b">It just wasn't theirs.</span></div>
+    </div>
+  </div>
+  <script>
+    const B = {cold_ask: 0.0, cold_hook: 3.31};
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#cold-title", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.6, ease: "expo.out", immediateRender: false }, 0.2);
+    tl.fromTo("#cold-yours", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out", immediateRender: false }, B.cold_hook);
+    tl.fromTo("#cold-row", { x: 48, opacity: 0 }, { x: 0, opacity: 1, duration: 0.45, ease: "expo.out", immediateRender: false }, B.cold_hook + 0.25);
+    tl.fromTo("#hook-a", { opacity: 0 }, { opacity: 1, duration: 0.35, ease: "power2.out", immediateRender: false }, B.cold_hook + 0.15);
+    tl.fromTo("#hook-b", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power2.out", immediateRender: false }, B.cold_hook + 0.7);
+    window.__timelines["cold"] = tl;
+  </script>
+</template>

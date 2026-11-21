@@ -1,0 +1,141 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; overflow: hidden; background: #f3efe6; font-family: Roboto, sans-serif; color: #16130f; }
+    .card { position: absolute; top: 150px; width: 680px; height: 620px; background: #f3efe6; border: 4px solid #16130f; box-shadow: 10px 10px 0 #16130f; }
+    .card h2 { position: absolute; left: 32px; top: 28px; font-size: 36px; font-weight: 700; letter-spacing: -0.02em; }
+    .sub { position: absolute; left: 32px; top: 88px; width: 600px; font-size: 28px; color: #6b645c; }
+    .lock { position: absolute; left: 170px; top: 220px; width: 320px; height: 240px; }
+    .pw { position: absolute; left: 40px; top: 240px; width: 600px; height: 120px; border: none; background: transparent; display: flex; align-items: center; padding: 0 28px; font-size: 40px; font-weight: 700; letter-spacing: 0.14em; }
+    .strike { position: absolute; left: 24px; top: 58px; width: 520px; height: 4px; background: #16130f; transform: scaleX(0); transform-origin: left center; }
+    .browser { position: absolute; left: 28px; top: 150px; width: 620px; height: 250px; border: 3px solid #16130f; background: #f3efe6; }
+    .bh { height: 56px; background: #16130f; color: #f3efe6; font-size: 28px; font-weight: 700; display: flex; align-items: center; padding: 0 18px; }
+    .brow { position: absolute; left: 20px; top: 88px; width: 576px; height: 120px; border: 3px solid #16130f; }
+    .bkey { position: absolute; left: 18px; top: 28px; font-size: 32px; font-weight: 700; opacity: 0; }
+    .bkey small { display: block; font-size: 24px; font-weight: 500; color: #6b645c; margin-top: 4px; }
+    .yes { position: absolute; right: 18px; top: 34px; font-size: 32px; font-weight: 700; border: 3px solid #16130f; padding: 6px 14px; opacity: 0; }
+    #look-dash { position: absolute; inset: 0; border: 3px dashed #16130f; opacity: 0; pointer-events: none; }
+    #hello-dlg { position: absolute; left: 40px; top: 180px; width: 600px; background: #f3efe6; border: 4px solid #16130f; box-shadow: 8px 8px 0 #16130f; opacity: 0; transform-origin: 50% 40%; }
+    .dlg-h { height: 52px; background: #16130f; color: #f3efe6; font-size: 24px; font-weight: 700; display: flex; align-items: center; padding: 0 16px; }
+    .dlg-b { padding: 20px 22px 24px; }
+    .dlg-t { font-size: 32px; font-weight: 700; letter-spacing: -0.03em; }
+    .dlg-s { margin-top: 6px; font-size: 24px; color: #6b645c; }
+    .pins { display: flex; gap: 14px; margin-top: 22px; }
+    .pin { width: 22px; height: 22px; border: 3px solid #16130f; background: transparent; }
+    .cap { position: absolute; left: 180px; top: 820px; width: 1560px; font-size: 36px; font-weight: 700; letter-spacing: -0.03em; }
+    #t-site, #t-look, #s-stay, #s-hello, #s-pin, #s-sync { opacity: 0; }
+  </style>
+  <div id="root" data-composition-id="mechanism" data-motion-blur="on" data-width="1920" data-height="1080">
+    <div id="mech-left" class="clip" data-beat="mech_pw" data-until="SCENE_END" data-start="0" data-duration="85.99" data-track-index="0">
+      <div class="card" style="left: 160px">
+        <h2>Your PC</h2>
+        <div class="sub" id="s-stay">Private half. It stays here.</div>
+        <div class="sub" id="s-hello">Windows Hello unlocks it here.</div>
+        <div class="sub" id="s-pin">The PIN never reaches the site.</div>
+        <div class="sub" id="s-sync">On this PC, or synced. Still no box.</div>
+        <div class="lock" id="pc-key">
+          <svg viewBox="0 0 320 240" width="320" height="240">
+            <rect x="70" y="28" width="180" height="118" stroke="#16130f" stroke-width="6" fill="none"/>
+            <rect x="86" y="44" width="148" height="86" stroke="#16130f" stroke-width="4" fill="none"/>
+            <path d="M128 146 H192 L210 176 H110 Z" stroke="#16130f" stroke-width="6" fill="none"/>
+            <rect x="96" y="176" width="128" height="12" fill="#16130f"/>
+          </svg>
+        </div>
+        <div id="hello-dlg">
+          <div class="dlg-h">Windows Security</div>
+          <div class="dlg-b">
+            <div class="dlg-t">Making sure it's you</div>
+            <div class="dlg-s">Windows Hello · this PC only</div>
+            <div class="pins">
+              <div class="pin" id="pin1"></div>
+              <div class="pin" id="pin2"></div>
+              <div class="pin" id="pin3"></div>
+              <div class="pin" id="pin4"></div>
+              <div class="pin" id="pin5"></div>
+              <div class="pin" id="pin6"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="mech-right" class="clip" data-beat="mech_pw" data-until="SCENE_END" data-start="0" data-duration="85.99" data-track-index="1">
+      <div class="card" style="left: 1040px">
+        <h2 id="t-pass">A password</h2>
+        <h2 id="t-site">The real site</h2>
+        <h2 id="t-look">Lookalike site</h2>
+        <div class="browser" id="real-page">
+          <div class="bh">Account</div>
+          <div class="brow" id="brow">
+            <div class="bkey" id="bkey">This PC<small id="bkey-sub">Yours · signed in</small></div>
+            <div class="yes" id="mech-yes">Yes</div>
+          </div>
+          <div id="look-dash"></div>
+        </div>
+      </div>
+    </div>
+    <div id="mech-pw-clip" class="clip" data-beat="mech_pw" data-until="mech_half" data-start="0" data-duration="8.9" data-track-index="2">
+      <div class="pw" style="left: 1088px; top: 388px; width: 576px; height: 120px">
+        ••••••••••
+        <div class="strike" id="mech-strike"></div>
+      </div>
+    </div>
+    
+    <div id="cap-pw" class="clip" data-beat="mech_pw" data-until="mech_not" data-start="0" data-duration="6.8" data-track-index="4">
+      <div class="cap">A string you can type into either page.</div>
+    </div>
+    <div id="cap-not" class="clip" data-beat="mech_not" data-until="mech_half" data-start="6.8" data-duration="2.1" data-track-index="4">
+      <div class="cap">A passkey is not that string.</div>
+    </div>
+    <div id="cap-half" class="clip" data-beat="mech_half" data-until="mech_hello" data-start="8.9" data-duration="12.1" data-track-index="4">
+      <div class="cap">Private half stays. The site holds the lock.</div>
+    </div>
+    <div id="cap-hello" class="clip" data-beat="mech_hello" data-until="mech_pin" data-start="21" data-duration="7.3" data-track-index="4">
+      <div class="cap">Windows Hello, or a security key, unlocks it.</div>
+    </div>
+    <div id="cap-pin" class="clip" data-beat="mech_pin" data-until="mech_sync" data-start="28.3" data-duration="8.96" data-track-index="4">
+      <div class="cap">The PIN is not a password for the website.</div>
+    </div>
+    <div id="cap-sync" class="clip" data-beat="mech_sync" data-until="mech_lock" data-start="37.26" data-duration="12.76" data-track-index="4">
+      <div class="cap">On this PC, or synced. There is still no box.</div>
+    </div>
+    <div id="cap-lock" class="clip" data-beat="mech_lock" data-until="mech_once" data-start="50.02" data-duration="13.46" data-track-index="4">
+      <div class="cap">The secret never crosses.</div>
+    </div>
+    <div id="cap-once" class="clip" data-beat="mech_once" data-until="mech_fake" data-start="63.48" data-duration="11.95" data-track-index="4">
+      <div class="cap">Signed for this site's name. Then spent.</div>
+    </div>
+    <div id="cap-fake" class="clip" data-beat="mech_fake" data-until="SCENE_END" data-start="75.43" data-duration="10.56" data-track-index="4">
+      <div class="cap">A lookalike gets nothing it can reuse.</div>
+    </div>
+  </div>
+  <script>
+    const B = {mech_pw: 0.0, mech_not: 6.8, mech_half: 8.9, mech_hello: 21.0, mech_pin: 28.3, mech_sync: 37.26, mech_lock: 50.02, mech_once: 63.48, mech_fake: 75.43, mech_half_back: 10.25, mech_half_yes: 11.5, mech_once_back: 64.73};
+    const tl = gsap.timeline({ paused: true });
+    const pinSpan = (B.mech_sync - B.mech_pin) / 7;
+    tl.fromTo("#mech-strike", { scaleX: 0 }, { scaleX: 1, duration: Math.max(0.6, B.mech_half - B.mech_not - 0.2), ease: "power2.out", immediateRender: false }, B.mech_not);
+    tl.set("#t-pass", { opacity: 0 }, B.mech_half);
+    tl.set("#t-site", { opacity: 1 }, B.mech_half);
+    tl.set("#s-stay", { opacity: 1 }, B.mech_half);
+    tl.to("#bkey", { opacity: 1, duration: 0.4, ease: "power2.out" }, B.mech_half);
+    tl.fromTo("#mech-yes", { opacity: 0 }, { opacity: 1, duration: 0.35, ease: "expo.out", immediateRender: false }, B.mech_half + (B.mech_hello - B.mech_half) * 0.72);
+    tl.set("#s-stay", { opacity: 0 }, B.mech_hello);
+    tl.set("#s-hello", { opacity: 1 }, B.mech_hello);
+    tl.set("#pc-key", { opacity: 0 }, B.mech_hello);
+    tl.fromTo("#hello-dlg", { opacity: 0, scale: 0.94 }, { opacity: 1, scale: 1, duration: 0.45, ease: "expo.out", immediateRender: false }, B.mech_hello + 0.15);
+    tl.set("#s-hello", { opacity: 0 }, B.mech_pin);
+    tl.set("#s-pin", { opacity: 1 }, B.mech_pin);
+    ["#pin1", "#pin2", "#pin3", "#pin4", "#pin5", "#pin6"].forEach(function (id, n) {
+      tl.to(id, { backgroundColor: "#16130f", duration: 0.12 }, B.mech_pin + pinSpan * (n + 1));
+    });
+    tl.set("#s-pin", { opacity: 0 }, B.mech_sync);
+    tl.set("#s-sync", { opacity: 1 }, B.mech_sync);
+    tl.to("#hello-dlg", { opacity: 0, scale: 0.96, duration: 0.35, ease: "power2.in" }, B.mech_lock);
+    tl.set("#pc-key", { opacity: 1 }, B.mech_lock + 0.35);
+    tl.set("#s-sync", { opacity: 0 }, B.mech_fake);
+    tl.set("#t-site", { opacity: 0 }, B.mech_fake);
+    tl.set("#mech-yes", { opacity: 0 }, B.mech_fake);
+    tl.set("#t-look", { opacity: 1 }, B.mech_fake);
+    tl.to("#look-dash", { opacity: 1, duration: 0.45 }, B.mech_fake);
+    tl.set("#bkey-sub", { opacity: 0 }, B.mech_fake);
+    window.__timelines["mechanism"] = tl;
+  </script>
+</template>

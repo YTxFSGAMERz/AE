@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en" data-composition-variables='[{"id":"hook","type":"string","label":"Hook","default":"The passkey worked. It just wasn\u2019t theirs."},{"id":"chapter","type":"string","label":"Chapter","default":"The second key"}]'>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      :root {
+        --ground: #f3efe6;
+        --ink: #16130f;
+        --font-body: Roboto, sans-serif;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        margin: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: var(--ground);
+        font-family: var(--font-body);
+        color: var(--ink);
+      }
+      #root { position: absolute; inset: 0; }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="362.49"
+      data-width="1920"
+      data-height="1080"
+    >
+      <div
+        id="cold"
+        class="clip"
+        data-composition-id="cold"
+        data-composition-src="compositions/cold.html"
+        data-start="0.55"
+        data-duration="6.72"
+        data-track-index="0"
+        data-track-kind="graphics"
+        data-width="1920"
+        data-height="1080"
+      ></div>
+      <div id="promise" class="clip" data-composition-id="promise" data-composition-src="compositions/promise.html" data-start="7.27" data-duration="6.42" data-track-index="0" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <div id="mechanism" class="clip" data-composition-id="mechanism" data-composition-src="compositions/mechanism.html" data-start="13.69" data-duration="85.99" data-track-index="0" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <div id="figures" class="clip" data-composition-id="figures" data-composition-src="compositions/figures.html" data-start="99.68" data-duration="71.94" data-track-index="0" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <div id="call" class="clip" data-composition-id="call" data-composition-src="compositions/call.html" data-start="171.62" data-duration="100.76" data-track-index="0" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <div id="checks" class="clip" data-composition-id="checks" data-composition-src="compositions/checks.html" data-start="272.38" data-duration="81.43" data-track-index="0" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <div id="endcard" class="clip" data-composition-id="endcard" data-composition-src="compositions/endcard.html" data-start="353.81" data-duration="8.68" data-track-index="0" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <audio id="vo" class="clip" src="assets/voice/narration.wav" data-start="0" data-duration="359.89" data-track-index="2" data-volume="1" data-fade-in="0.05" data-fade-out="0.2"></audio>
+      <audio id="bed" class="clip" src="assets/music/motif.wav" data-start="0" data-duration="362.49" data-track-index="3" data-volume="1" data-fade-in="1.2" data-fade-out="2.2" data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0,"v":0.16},{"t":171.62,"v":0.16},{"t":173.72,"v":0.05},{"t":272.38,"v":0.05},{"t":274.68,"v":0.13},{"t":362.49,"v":0.13}]}]}'></audio>
+      <audio id="tick-paper-cold" class="clip" src="assets/music/paper.wav" data-start="0.12" data-duration="0.09" data-track-index="4" data-volume="0.45"></audio>
+      <audio id="tick-click-cold" class="clip" src="assets/music/click.wav" data-start="0.32" data-duration="0.06" data-track-index="4" data-volume="0.35"></audio>
+      <audio id="tick-tone-call" class="clip" src="assets/music/tone.wav" data-start="216.39" data-duration="1.15" data-track-index="4" data-volume="0.28"></audio>
+      <audio id="tick-click-call" class="clip" src="assets/music/click.wav" data-start="223.29" data-duration="0.06" data-track-index="4" data-volume="0.35"></audio>
+      <audio id="tick-paper-checks" class="clip" src="assets/music/paper.wav" data-start="272.38" data-duration="0.09" data-track-index="4" data-volume="0.4"></audio>
+      <audio id="tick-click-sites" class="clip" src="assets/music/click.wav" data-start="320.74" data-duration="0.06" data-track-index="4" data-volume="0.35"></audio>
+      <div id="brand" class="clip" data-start="0" data-duration="362.49" data-track-index="5">
+        <div style="position:absolute;left:160px;top:36px;font-family:Roboto,sans-serif;font-size:28px;font-weight:700;letter-spacing:-0.03em;color:#16130f">YTxFSGAMERz</div>
+      </div>
+      <div id="print" class="clip" data-start="0" data-duration="362.34" data-track-index="1">
+        <div id="print-bar" style="position:absolute;left:160px;top:1004px;width:1600px;height:4px;background:#16130f;transform-origin:left center"></div>
+      </div>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#print-bar", { scaleX: 0 }, { scaleX: 1, duration: 362.09, ease: "none" }, 0);
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

@@ -1,0 +1,168 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; overflow: hidden; background: #f3efe6; font-family: Roboto, sans-serif; color: #16130f; }
+    .sheet { position: absolute; left: 200px; top: 140px; width: 1480px; height: 760px; border: 4px solid #16130f; box-shadow: 10px 10px 0 #16130f; background: #f3efe6; }
+    .head { position: absolute; left: 200px; top: 140px; width: 1480px; height: 88px; background: #16130f; color: #f3efe6; font-size: 36px; font-weight: 700; display: flex; align-items: center; padding: 0 36px; }
+    .kicker { position: absolute; left: 250px; top: 270px; font-size: 28px; color: #6b645c; }
+    .line { position: absolute; left: 250px; top: 320px; width: 1380px; font-size: 48px; font-weight: 700; letter-spacing: -0.03em; line-height: 1.15; }
+    .split { position: absolute; top: 480px; width: 640px; height: 280px; border: 4px solid #16130f; background: #f3efe6; }
+    .split h3 { height: 64px; background: #16130f; color: #f3efe6; font-size: 28px; display: flex; align-items: center; padding: 0 20px; }
+    .split p { padding: 28px 20px 0; font-size: 32px; font-weight: 700; line-height: 1.3; }
+    .hang { position: absolute; left: 250px; top: 520px; display: flex; align-items: center; gap: 28px; }
+    .hand { position: relative; width: 120px; height: 88px; }
+    .hand svg { position: absolute; left: 16px; top: 8px; transform: rotate(90deg); transform-origin: 36px 36px; }
+    .hand .cut { position: absolute; left: 0; top: 42px; width: 120px; height: 4px; background: #16130f; transform-origin: left center; }
+    .mark { width: 700px; height: 88px; border: 3px solid #16130f; display: flex; align-items: center; padding: 0 24px; font-size: 32px; font-weight: 700; }
+    .row { position: absolute; left: 280px; width: 1320px; height: 110px; border: 3px solid #16130f; display: flex; align-items: center; gap: 18px; padding: 0 24px; background: #f3efe6; }
+    .row .t { font-size: 32px; font-weight: 700; }
+    .row .s { font-size: 28px; color: #6b645c; }
+    .row .act { margin-left: auto; font-size: 28px; font-weight: 700; border: 3px solid #16130f; padding: 8px 14px; }
+    .amber { background: #f3ddc8; }
+    .edge { position: absolute; left: 0; top: 0; width: 10px; height: 110px; background: #c45c12; }
+    svg.key { width: 56px; height: 56px; flex: none; }
+    .sw { position: absolute; left: 280px; top: 500px; width: 320px; height: 88px; border: 4px solid #16130f; }
+    .sw .fill { position: absolute; left: 0; top: 0; width: 320px; height: 88px; background: #16130f; transform-origin: left center; }
+    .sw .lab { position: absolute; left: 350px; top: 8px; font-size: 48px; font-weight: 700; }
+    .sw .sub { position: absolute; left: 350px; top: 64px; width: 900px; font-size: 28px; color: #6b645c; }
+    .door { position: absolute; left: 280px; width: 1320px; height: 100px; border: 3px solid #16130f; display: flex; align-items: center; padding: 0 28px; font-size: 36px; font-weight: 700; }
+    .door .x { margin-left: auto; font-size: 28px; }
+    .hit { position: absolute; left: 24px; top: 48px; height: 4px; background: #16130f; transform: scaleX(0); transform-origin: left center; }
+    .site { position: absolute; left: 250px; top: 280px; width: 1380px; opacity: 0; }
+    .site .who { font-size: 28px; font-weight: 500; color: #6b645c; }
+    .site .name { margin-top: 8px; font-size: 64px; font-weight: 700; letter-spacing: -0.04em; }
+    .site .step { margin-top: 36px; height: 92px; border: 3px solid #16130f; display: flex; align-items: center; gap: 18px; padding: 0 28px; font-size: 32px; font-weight: 700; background: #f3ddc8; }
+    .site .step svg { width: 48px; height: 48px; flex: none; }
+    .crow { height: 72px; border-bottom: 3px solid #16130f; display: flex; align-items: center; font-size: 32px; font-weight: 700; }
+  </style>
+  <div id="root" data-composition-id="checks" data-width="1920" data-height="1080">
+    <div id="checks-sheet" class="clip" data-beat="chk_what" data-until="SCENE_END" data-start="0" data-duration="81.43" data-track-index="0">
+      <div class="sheet"></div>
+      <div class="head">Opened by you</div>
+      <div id="chk-rows" style="position:absolute;left:250px;top:250px;width:1380px">
+        <div class="crow">1 · Hang up and open the account yourself</div>
+        <div class="crow">2 · Read the list and remove what isn't yours</div>
+        <div class="crow">3 · Turn a passkey on from the page you opened</div>
+      </div>
+    </div>
+    <div id="check-ask" class="clip" data-beat="chk_what" data-until="chk_two" data-start="0" data-duration="1.64" data-track-index="1">
+      <div class="line" style="top: 520px">Three checks. They stay on this page.</div>
+    </div>
+    <div id="check-two" class="clip" data-beat="chk_two" data-until="chk_1" data-start="1.64" data-duration="8.94" data-track-index="1">
+      <div>
+        <div class="split" style="left: 250px"><h3>Their prompt</h3><p>The voice just put it there.</p></div>
+        <div class="split" style="left: 980px"><h3>Your page</h3><p>You open this one yourself.</p></div>
+      </div>
+    </div>
+    <div id="check-1" class="clip" data-beat="chk_1" data-until="chk_2" data-start="10.58" data-duration="8.56" data-track-index="1">
+      <div>
+        <div class="hang" style="top: 500px">
+          <div class="hand">
+            <svg width="72" height="72" viewBox="0 0 72 72" fill="none">
+              <rect x="20" y="4" width="32" height="64" stroke="#16130f" stroke-width="4"/>
+              <rect x="28" y="12" width="16" height="6" fill="#16130f"/>
+              <rect x="26" y="52" width="20" height="6" fill="#16130f"/>
+            </svg>
+            <div class="cut" id="k1-cut"></div>
+          </div>
+          <div class="mark">A bookmark you already had</div>
+        </div>
+      </div>
+    </div>
+    <div id="check-2" class="clip" data-beat="chk_2" data-until="chk_code" data-start="19.14" data-duration="15.2" data-track-index="1">
+      <div>
+        <div class="kicker">Second</div>
+        <div class="line">Read the list. Remove what isn't yours.</div>
+        <div class="row" style="top: 500px">
+          <svg class="key" viewBox="0 0 84 84" fill="none">
+            <circle cx="30" cy="32" r="16" stroke="#16130f" stroke-width="4"/>
+            <circle cx="30" cy="32" r="5" fill="#16130f"/>
+            <path d="M44 32 H72 V40 H64 V48 H56 V40 H48 V32" stroke="#16130f" stroke-width="4" fill="none"/>
+          </svg>
+          <div><div class="t">This PC</div><div class="s">Yours</div></div>
+        </div>
+        <div class="row amber" id="k2-row" style="top: 640px; opacity: 0">
+          <div class="edge"></div>
+          <svg class="key" viewBox="0 0 84 84" fill="none">
+            <circle cx="30" cy="32" r="16" stroke="#c45c12" stroke-width="4"/>
+            <circle cx="30" cy="32" r="5" fill="#c45c12"/>
+            <path d="M44 32 H72 V40 H64 V48 H56 V40 H48 V32" stroke="#c45c12" stroke-width="4" fill="none"/>
+          </svg>
+          <div><div class="t">Not this one</div><div class="s">Then change the password here</div></div>
+          <div class="act">Remove</div>
+        </div>
+      </div>
+    </div>
+    <div id="check-code" class="clip" data-beat="chk_code" data-until="chk_3" data-start="34.34" data-duration="7.04" data-track-index="1">
+      <div>
+        <div class="line">You don't owe a caller a number.</div>
+        <div class="row" style="top: 520px">
+          <div class="t">A number off the screen</div>
+          <div class="hit" id="k-code-hit" style="width: 460px"></div>
+          <div class="act">No tap</div>
+        </div>
+      </div>
+    </div>
+    <div id="check-3" class="clip" data-beat="chk_3" data-until="chk_sites" data-start="41.38" data-duration="6.98" data-track-index="1">
+      <div>
+        <div class="kicker">Third</div>
+        <div class="line">Turn a passkey on yourself.</div>
+        <div class="sw">
+          <div class="fill" id="k3-fill"></div>
+          <div class="lab">Passkey</div>
+          <div class="sub">From the page you opened.</div>
+        </div>
+      </div>
+    </div>
+    <div id="check-sites" class="clip" data-beat="chk_sites" data-until="chk_obey" data-start="48.36" data-duration="18.36" data-track-index="1">
+      <div>
+        <div class="site" id="site-ms">
+          <div class="who">Microsoft account · Security</div>
+          <div class="name">Add a new way to sign in</div>
+          <div class="step"><svg viewBox="0 0 84 84" fill="none"><circle cx="30" cy="32" r="16" stroke="#16130f" stroke-width="4"/><circle cx="30" cy="32" r="5" fill="#16130f"/><path d="M44 32 H72 V40 H64 V48 H56 V40 H48 V32" stroke="#16130f" stroke-width="4" fill="none"/></svg>Face, fingerprint, PIN, or security key</div>
+        </div>
+        <div class="site" id="site-gg">
+          <div class="who">Google Account · Security and sign-in</div>
+          <div class="name">Passkeys and security keys</div>
+          <div class="step"><svg viewBox="0 0 84 84" fill="none"><circle cx="30" cy="32" r="16" stroke="#16130f" stroke-width="4"/><circle cx="30" cy="32" r="5" fill="#16130f"/><path d="M44 32 H72 V40 H64 V48 H56 V40 H48 V32" stroke="#16130f" stroke-width="4" fill="none"/></svg>Create a passkey</div>
+        </div>
+        <div class="site" id="site-pc">
+          <div class="who">This PC</div>
+          <div class="name">Windows Settings</div>
+          <div class="step"><svg viewBox="0 0 84 84" fill="none"><circle cx="30" cy="32" r="16" stroke="#16130f" stroke-width="4"/><circle cx="30" cy="32" r="5" fill="#16130f"/><path d="M44 32 H72 V40 H64 V48 H56 V40 H48 V32" stroke="#16130f" stroke-width="4" fill="none"/></svg>Accounts · Passkeys</div>
+      </div>
+    </div>
+    <div id="check-obey" class="clip" data-beat="chk_obey" data-until="chk_limit" data-start="66.72" data-duration="5.02" data-track-index="1">
+      <div>
+        <div class="line">The fake login stops.</div>
+        <div class="line" style="top: 420px">A person who obeys a caller does not.</div>
+      </div>
+    </div>
+    <div id="check-limit" class="clip" data-beat="chk_limit" data-until="SCENE_END" data-start="71.74" data-duration="9.69" data-track-index="1">
+      <div>
+        <div class="kicker">What a passkey actually closes</div>
+        <div class="door" style="top: 360px">The fake login<div class="x">Closed</div><div class="hit" id="k-door-hit" style="width: 280px"></div></div>
+        <div class="door" style="top: 490px">A PC left unlocked<div class="x">Still open</div><div class="hit" id="k-door-2" style="width: 420px"></div></div>
+        <div class="door" style="top: 620px">Software you agreed to run<div class="x">Still open</div><div class="hit" id="k-door-3" style="width: 560px"></div></div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const B = {chk_what: 0.0, chk_two: 1.64, chk_1: 10.58, chk_2: 19.14, chk_code: 34.34, chk_3: 41.38, chk_sites: 48.36, chk_obey: 66.72, chk_limit: 71.74};
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#k1-cut", { scaleX: 0 }, { scaleX: 1, duration: Math.max(0.5, (B.chk_2 - B.chk_1) * 0.45), ease: "power2.out", immediateRender: false }, B.chk_1);
+    tl.fromTo("#k2-row", { x: 64, opacity: 0 }, { x: 0, opacity: 1, duration: Math.max(0.6, (B.chk_code - B.chk_2) * 0.35), ease: "power2.out", immediateRender: false }, B.chk_2 + 1.2);
+    tl.fromTo("#k-code-hit", { scaleX: 0 }, { scaleX: 1, duration: Math.max(0.8, (B.chk_3 - B.chk_code) * 0.55), ease: "none", immediateRender: false }, B.chk_code);
+    tl.fromTo("#k3-fill", { scaleX: 0 }, { scaleX: 1, duration: Math.max(0.6, (B.chk_sites - B.chk_3) * 0.6), ease: "power2.out", immediateRender: false }, B.chk_3);
+    const siteSpan = Math.max(1.4, (B.chk_obey - B.chk_sites) / 3);
+    tl.to("#chk-rows", { opacity: 0, duration: 0.25 }, B.chk_sites);
+    tl.fromTo("#site-ms", { y: 28, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "expo.out", immediateRender: false }, B.chk_sites + 0.2);
+    tl.to("#site-ms", { y: -18, opacity: 0, duration: 0.28, ease: "power2.in" }, B.chk_sites + siteSpan);
+    tl.fromTo("#site-gg", { y: 28, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "expo.out", immediateRender: false }, B.chk_sites + siteSpan);
+    tl.to("#site-gg", { y: -18, opacity: 0, duration: 0.28, ease: "power2.in" }, B.chk_sites + siteSpan * 2);
+    tl.fromTo("#site-pc", { y: 28, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "expo.out", immediateRender: false }, B.chk_sites + siteSpan * 2);
+    tl.fromTo("#k-door-hit", { scaleX: 0 }, { scaleX: 1, duration: 0.8, ease: "power2.out", immediateRender: false }, B.chk_limit);
+    tl.fromTo("#k-door-2", { scaleX: 0 }, { scaleX: 1, duration: 0.8, ease: "power2.out", immediateRender: false }, B.chk_limit + 1.6);
+    tl.fromTo("#k-door-3", { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: "power2.out", immediateRender: false }, B.chk_limit + 3.2);
+    window.__timelines["checks"] = tl;
+  </script>
+</template>

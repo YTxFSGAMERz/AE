@@ -1,0 +1,259 @@
+{
+  "sr": 24000,
+  "total": 359.89,
+  "device": "cuda",
+  "lines": [
+    {
+      "i": 1,
+      "start": 0.55,
+      "dur": 2.16,
+      "text": "Are passkeys actually safe?"
+    },
+    {
+      "i": 2,
+      "start": 3.86,
+      "dur": 2.56,
+      "text": "The passkey worked. It just wasn't theirs."
+    },
+    {
+      "i": 3,
+      "start": 7.27,
+      "dur": 6.04,
+      "text": "In the next six minutes: what a passkey actually is, the phone call that beat one, and three checks on a Windows PC."
+    },
+    {
+      "i": 4,
+      "start": 13.69,
+      "dur": 6.44,
+      "text": "A password is a string you can type. You can type it into the real page. You can also type it into a page that only looks real."
+    },
+    {
+      "i": 5,
+      "start": 20.49,
+      "dur": 1.68,
+      "text": "A passkey doesn't work that way."
+    },
+    {
+      "i": 6,
+      "start": 22.59,
+      "dur": 11.76,
+      "text": "The private half stays on your device. The site stores the public half, and only that. The site sends a challenge. A one-time puzzle. Your device signs it. The site learns one thing. Yes. Right device. Right site."
+    },
+    {
+      "i": 7,
+      "start": 34.69,
+      "dur": 6.96,
+      "text": "Windows Hello, or a security key, is what unlocks that private half. The PIN stays on the machine. The site never receives it."
+    },
+    {
+      "i": 8,
+      "start": 41.99,
+      "dur": 8.6,
+      "text": "The PIN is not a second password for the website. It stays on the PC and unlocks the private half there. The site never sees it, and it cannot be typed into a lookalike."
+    },
+    {
+      "i": 9,
+      "start": 50.95,
+      "dur": 12.4,
+      "text": "Some passkeys never leave the PC they were created on. Others are allowed to sync to your phone or your next PC through the account you already use. Either way, you still cannot paste the private half into a box. There is no box."
+    },
+    {
+      "i": 10,
+      "start": 63.71,
+      "dur": 12.76,
+      "text": "So the picture is a lock and a secret. Your machine holds the secret, and it will not hand it over. The website holds the lock that only that secret fits. A person who copies the website does not get the secret. The secret never crosses."
+    },
+    {
+      "i": 11,
+      "start": 77.17,
+      "dur": 11.4,
+      "text": "Picture one sign-in. The real site sends a one-time challenge. Your PC signs that challenge for that site's name, and only that name. The answer is useless tomorrow, and useless on any other address."
+    },
+    {
+      "i": 12,
+      "start": 89.12,
+      "dur": 10.08,
+      "text": "Here's the part that kills the fake page. The key is tied to the real domain. A lookalike address gets nothing it can reuse. You can't paste a passkey into the wrong box. You never see it. You can't type it."
+    },
+    {
+      "i": 13,
+      "start": 99.68,
+      "dur": 6.56,
+      "text": "This isn't a lab trick anymore. The FIDO Alliance published its Passkey Index on the fifteenth of October, 2026."
+    },
+    {
+      "i": 14,
+      "start": 106.64,
+      "dur": 11.64,
+      "text": "Across the large services that reported, thirty-six percent of successful sign-ins used a passkey. A year earlier that share was twenty-six percent. FIDO says the comparison is directional, because the group of companies changed."
+    },
+    {
+      "i": 15,
+      "start": 118.62,
+      "dur": 6.12,
+      "text": "Those sign-ins succeed more often. Ninety-three percent, against seventy-eight percent for passwords and the older codes."
+    },
+    {
+      "i": 16,
+      "start": 125.06,
+      "dur": 6.12,
+      "text": "And they're quicker. About two-point-eight times faster. The services that timed it saved about twenty-seven seconds a sign-in."
+    },
+    {
+      "i": 17,
+      "start": 131.5,
+      "dur": 5.44,
+      "text": "Eight of those services measured phishing. All eight saw fewer successful attacks after they turned passkeys on."
+    },
+    {
+      "i": 18,
+      "start": 137.3,
+      "dur": 11.96,
+      "text": "Read the speed and the success rate as sign-in numbers. They mean the real door opens more often, and faster. The phishing drop is real at those services. It is not a promise about a person who is already on the phone with you."
+    },
+    {
+      "i": 19,
+      "start": 149.76,
+      "dur": 9.48,
+      "text": "One quieter number, so I don't oversell it. About thirty-eight percent of accounts have a passkey. About thirty-six percent of sign-ins use one. Plenty of people still have the old door."
+    },
+    {
+      "i": 20,
+      "start": 159.64,
+      "dur": 11.56,
+      "text": "The old door is whatever still lets someone in without that key. A password that still works. A text with a code. A recovery mail. A passkey does not close those by itself. You close them, on the account, after the key is on."
+    },
+    {
+      "i": 21,
+      "start": 171.62,
+      "dur": 3.52,
+      "text": "So if the fake page is dead, why are accounts still falling?"
+    },
+    {
+      "i": 22,
+      "start": 175.76,
+      "dur": 5.56,
+      "text": "Because the callers moved. They stopped asking for the password at the login. They ask you to enroll a key."
+    },
+    {
+      "i": 23,
+      "start": 181.87,
+      "dur": 8.28,
+      "text": "And it is a real button. On the real account. Pressed by you, because a voice is walking you through it. Nothing on that page has to be fake for the key to end up theirs."
+    },
+    {
+      "i": 24,
+      "start": 190.65,
+      "dur": 14.28,
+      "text": "On the fifth of July, 2026, Okta published what they'd been seeing since April. They track the cluster as O-UNC-066. Palo Alto's Unit 42 tracks the extortion side as Pink. The motive they reported is data extortion."
+    },
+    {
+      "i": 25,
+      "start": 205.41,
+      "dur": 10.48,
+      "text": "The targets they reported were companies. Food and drink. Technology. Healthcare. Cars. Construction. Aviation. Not a gaming PC in a bedroom. The method is the thing that travels."
+    },
+    {
+      "i": 26,
+      "start": 216.39,
+      "dur": 6.32,
+      "text": "The call sounds like IT. The line is simple. You need to register a passkey. For security. Right now."
+    },
+    {
+      "i": 27,
+      "start": 223.29,
+      "dur": 6.96,
+      "text": "They send you to a page that looks like the enrollment. While you're on that page, following a voice, the caller enrolls a passkey of their own on the real account."
+    },
+    {
+      "i": 28,
+      "start": 230.73,
+      "dur": 6.0,
+      "text": "Then a real email arrives. A new passkey was added. It reads like a receipt for the thing you think you just did."
+    },
+    {
+      "i": 29,
+      "start": 237.28,
+      "dur": 8.36,
+      "text": "That is why this one fools careful people. The mail is not fake. The key on the real account is not fake. The lie was the voice, and the page that voice sent you to."
+    },
+    {
+      "i": 30,
+      "start": 246.06,
+      "dur": 10.08,
+      "text": "Careful people check the sender and the spelling. This mail can pass both. The service really sent it, because a key really was added to the real account. The lie was over before the mail arrived."
+    },
+    {
+      "i": 31,
+      "start": 256.62,
+      "dur": 7.84,
+      "text": "Watch for one tell. A real passkey enrollment does not ask you to write down a recovery phrase. If a page wants a phrase, you are not in the real flow. Close it."
+    },
+    {
+      "i": 32,
+      "start": 264.88,
+      "dur": 7.0,
+      "text": "A second tell. A real enrollment can wait. A voice that will not let you hang up needs you to stay out of the account you would have opened yourself."
+    },
+    {
+      "i": 33,
+      "start": 272.38,
+      "dur": 1.28,
+      "text": "What do you actually do?"
+    },
+    {
+      "i": 34,
+      "start": 274.02,
+      "dur": 8.6,
+      "text": "On a Windows PC, the prompt a voice just put in front of you and the security page you open yourself are not the same object. The voice wants the first. You want the second."
+    },
+    {
+      "i": 35,
+      "start": 282.96,
+      "dur": 8.24,
+      "text": "First. If a caller is walking you through a sign-in, hang up. Open the account from the app, or from a bookmark you already had. If you didn't start the prompt, don't approve it."
+    },
+    {
+      "i": 36,
+      "start": 291.52,
+      "dur": 14.88,
+      "text": "Second. Open that account's security page and read the list of passkeys. If a device isn't yours, remove it. Then change the password, from that same page you opened yourself. The fake page is where a password gets typed. The confirmation email is a clue. It isn't comfort."
+    },
+    {
+      "i": 37,
+      "start": 306.72,
+      "dur": 6.68,
+      "text": "If that voice asks you to read a number off the screen, you are still inside the call. You do not owe a caller a number, a phrase, or a tap."
+    },
+    {
+      "i": 38,
+      "start": 313.76,
+      "dur": 6.68,
+      "text": "Third. Turn a passkey on for the accounts that matter. The mail. The money. The one you game on. Do it from the page you opened yourself."
+    },
+    {
+      "i": 39,
+      "start": 320.74,
+      "dur": 17.96,
+      "text": "The pages have names. Microsoft account, under Security: add a new way to sign in, then face, fingerprint, PIN, or a security key. Google Account, under Security and sign-in: Passkeys and security keys. And on this PC, Windows Settings, Accounts, Passkeys. You open those yourself. A caller does not get to pick the page."
+    },
+    {
+      "i": 40,
+      "start": 339.1,
+      "dur": 4.6,
+      "text": "A passkey still stops the fake login. It does not stop a person who obeys a caller."
+    },
+    {
+      "i": 41,
+      "start": 344.12,
+      "dur": 9.24,
+      "text": "It also does not cover a PC you left unlocked, or software you agreed to run while a caller sounded sure. Those are other doors. A passkey closes the login that is not the real site."
+    },
+    {
+      "i": 42,
+      "start": 353.81,
+      "dur": 6.08,
+      "text": "A password can be typed into the wrong page. A passkey can't. The call is the part that still works."
+    }
+  ]
+}
