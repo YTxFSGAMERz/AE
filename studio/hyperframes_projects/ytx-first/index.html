@@ -1,0 +1,139 @@
+<!doctype html>
+<html
+  lang="en"
+  data-composition-variables='[
+    {"id":"color-ink","type":"color","label":"Ink","default":"#16130f"},
+    {"id":"color-paper","type":"color","label":"Type","default":"#f3efe6"},
+    {"id":"font-body","type":"string","label":"Type","default":"Roboto"},
+    {"id":"price-was","type":"string","label":"Example was","default":"$80"},
+    {"id":"price-now","type":"string","label":"Example now","default":"$449"},
+    {"id":"chip-then","type":"string","label":"Contract Oct 2025","default":"$8.70"},
+    {"id":"chip-now","type":"string","label":"Contract Sep 2026","default":"$48"},
+    {"id":"claim-a","type":"string","label":"Claim","default":"Your RAM did not get worse"},
+    {"id":"claim-b","type":"string","label":"Payoff","default":"The wafer left"},
+    {"id":"channel","type":"string","label":"Channel","default":"YTxFSGAMERz"}
+  ]'
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      :root {
+        --color-ink: #16130f;
+        --color-paper: #f3efe6;
+        --font-body: "Roboto", sans-serif;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        margin: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #16130f;
+      }
+      #root { width: 100%; height: 100%; position: relative; }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="57.340"
+      data-width="1920"
+      data-height="1080"
+    >
+      <div
+        id="sticker"
+        data-composition-id="sticker"
+        data-composition-src="compositions/sticker.html"
+        data-start="0"
+        data-duration="7.469"
+        data-track-index="0"
+        data-track-kind="graphics"
+        data-width="1920"
+        data-height="1080"
+      ></div>
+      <div
+        id="now"
+        data-composition-id="now"
+        data-composition-src="compositions/now.html"
+        data-start="7.469"
+        data-duration="12.034"
+        data-track-index="0"
+        data-track-kind="graphics"
+        data-width="1920"
+        data-height="1080"
+      ></div>
+      <div
+        id="chip"
+        data-composition-id="chip"
+        data-composition-src="compositions/chip.html"
+        data-start="19.503"
+        data-duration="14.615"
+        data-track-index="0"
+        data-track-kind="graphics"
+        data-width="1920"
+        data-height="1080"
+      ></div>
+      <div
+        id="wafer"
+        data-composition-id="wafer"
+        data-composition-src="compositions/wafer.html"
+        data-start="34.118"
+        data-duration="11.394"
+        data-track-index="0"
+        data-track-kind="graphics"
+        data-width="1920"
+        data-height="1080"
+      ></div>
+      <div
+        id="shelf"
+        data-composition-id="shelf"
+        data-composition-src="compositions/shelf.html"
+        data-start="45.512"
+        data-duration="5.869"
+        data-track-index="0"
+        data-track-kind="graphics"
+        data-width="1920"
+        data-height="1080"
+      ></div>
+      <div
+        id="desk"
+        data-composition-id="desk"
+        data-composition-src="compositions/desk.html"
+        data-start="51.381"
+        data-duration="5.959"
+        data-track-index="0"
+        data-track-kind="graphics"
+        data-width="1920"
+        data-height="1080"
+      ></div>
+      <audio
+        id="narration"
+        class="clip"
+        src="assets/voice/narration.wav"
+        data-start="0"
+        data-duration="54.239"
+        data-track-index="1"
+        data-volume="1"
+      ></audio>
+      <audio
+        id="bed"
+        class="clip"
+        src="assets/bgm/track.wav"
+        data-start="0"
+        data-duration="57.340"
+        data-track-index="2"
+        data-volume="1"
+        data-fade-in="0.8"
+        data-fade-out="1.4"
+        data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0,"v":0.14},{"t":45.2,"v":0.14},{"t":45.8,"v":0.05},{"t":51.1,"v":0.05},{"t":51.7,"v":0.14}]}]}'
+      ></audio>
+    </div>
+    <script>
+      window.__timelines["main"] = gsap.timeline({ paused: true });
+    </script>
+  </body>
+</html>

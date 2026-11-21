@@ -1,0 +1,177 @@
+{
+  "sample_rate": 24000,
+  "gap": 0.45,
+  "total": 54.239,
+  "peak_before": 0.9551,
+  "gain": 0.9332,
+  "lines": [
+    {
+      "id": 1,
+      "start": 0.0,
+      "duration": 7.019,
+      "end": 7.019,
+      "phonemes": 0,
+      "sentences": [
+        {
+          "text": "A 32 gigabyte DDR5 kit used to sit on the shelf around eighty dollars.",
+          "start": 0.0,
+          "local": 0.0,
+          "duration": 5.118
+        },
+        {
+          "text": "One example.",
+          "start": 5.118,
+          "local": 5.118,
+          "duration": 0.877
+        },
+        {
+          "text": "Not every kit.",
+          "start": 5.995,
+          "local": 5.995,
+          "duration": 1.024
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "start": 7.469,
+      "duration": 11.584,
+      "end": 19.053,
+      "phonemes": 0,
+      "sentences": [
+        {
+          "text": "This October, the cheapest 32 gigabyte DDR5-6000 kit listed in the US was four hundred and fifty dollars.",
+          "start": 7.469,
+          "local": 0.0,
+          "duration": 7.847
+        },
+        {
+          "text": "Another example.",
+          "start": 15.316,
+          "local": 7.847,
+          "duration": 1.196
+        },
+        {
+          "text": "Same kind of shelf.",
+          "start": 16.512,
+          "local": 9.043,
+          "duration": 1.42
+        },
+        {
+          "text": "Different year.",
+          "start": 17.932,
+          "local": 10.463,
+          "duration": 1.121
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "start": 19.503,
+      "duration": 14.165,
+      "end": 33.668,
+      "phonemes": 0,
+      "sentences": [
+        {
+          "text": "The chip did not get slower.",
+          "start": 19.503,
+          "local": 0.0,
+          "duration": 2.156
+        },
+        {
+          "text": "A 16 gigabit DDR5 contract was about eight dollars and seventy cents in October 2025.",
+          "start": 21.658,
+          "local": 2.156,
+          "duration": 6.544
+        },
+        {
+          "text": "By September 2026 it was about forty-eight.",
+          "start": 28.202,
+          "local": 8.699,
+          "duration": 3.31
+        },
+        {
+          "text": "About five and a half times.",
+          "start": 31.512,
+          "local": 12.01,
+          "duration": 2.156
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "start": 34.118,
+      "duration": 10.944,
+      "end": 45.062,
+      "phonemes": 0,
+      "sentences": [
+        {
+          "text": "The wafer is why.",
+          "start": 34.118,
+          "local": 0.0,
+          "duration": 1.051
+        },
+        {
+          "text": "High bandwidth memory, the kind that trains the models, takes about three times the wafer for the same memory.",
+          "start": 35.169,
+          "local": 1.051,
+          "duration": 6.801
+        },
+        {
+          "text": "One die still goes in a PC.",
+          "start": 41.97,
+          "local": 7.852,
+          "duration": 1.669
+        },
+        {
+          "text": "Three go in the server.",
+          "start": 43.64,
+          "local": 9.522,
+          "duration": 1.422
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "start": 45.512,
+      "duration": 5.419,
+      "end": 50.931,
+      "phonemes": 0,
+      "sentences": [
+        {
+          "text": "In February 2026, Crucial's retail shipments had ended.",
+          "start": 45.512,
+          "local": 0.0,
+          "duration": 4.083
+        },
+        {
+          "text": "The hook is empty.",
+          "start": 49.595,
+          "local": 4.083,
+          "duration": 1.336
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "start": 51.381,
+      "duration": 2.859,
+      "end": 54.239,
+      "phonemes": 0,
+      "sentences": [
+        {
+          "text": "Your RAM did not get worse.",
+          "start": 51.381,
+          "local": 0.0,
+          "duration": 1.838
+        },
+        {
+          "text": "The wafer left.",
+          "start": 53.218,
+          "local": 1.838,
+          "duration": 1.021
+        }
+      ]
+    }
+  ]
+}

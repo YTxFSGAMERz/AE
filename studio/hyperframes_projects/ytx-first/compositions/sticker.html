@@ -1,0 +1,65 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: #16130f;
+      color: var(--color-paper, #f3efe6);
+      font-family: var(--font-body, "Roboto"), sans-serif;
+    }
+    .plate-clip { position: absolute; inset: 0; overflow: hidden; }
+    .mover { position: absolute; inset: 0; }
+    .mover img {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 116%;
+      height: 116%;
+      object-fit: cover;
+      object-position: left top;
+    }
+    #sticker-card {
+      position: absolute;
+      top: 140px;
+      right: 400px;
+      z-index: 3;
+      background: rgba(22, 19, 15, 0.86);
+      padding: 22px 28px 20px;
+    }
+    .num {
+      font-weight: 700;
+      font-size: 72px;
+      line-height: 0.9;
+      letter-spacing: -0.03em;
+    }
+    .sub {
+      margin-top: 8px;
+      font-weight: 700;
+      font-size: 36px;
+      letter-spacing: 0;
+    }
+  </style>
+  <div id="root" data-composition-id="sticker" data-width="1920" data-height="1080">
+    <div id="sticker-a" class="clip plate-clip" data-start="0" data-duration="5.118" data-track-index="0" data-layout-allow-overflow="true">
+      <div id="sticker-a-move" class="mover">
+        <img src="assets/box.jpg" alt="" />
+      </div>
+    </div>
+    <div id="sticker-b" class="clip plate-clip" data-start="5.118" data-duration="2.351" data-track-index="0" data-layout-allow-overflow="true">
+      <div id="sticker-b-move" class="mover">
+        <img src="assets/box-peel.jpg" alt="" />
+      </div>
+    </div>
+    <div id="sticker-card" class="clip" data-start="4.15" data-duration="3.15" data-track-index="1" data-beat="was">
+      <div class="num" data-var-text="price-was">$80</div>
+      <div class="sub">example · 32GB DDR5</div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#sticker-a-move", { scale: 1, transformOrigin: "36% 46%" }, { scale: 1.045, duration: 4.96, ease: "power1.inOut" }, 0);
+    tl.fromTo("#sticker-b-move", { scale: 1, transformOrigin: "36% 46%" }, { scale: 1.045, duration: 2.2, ease: "power1.inOut" }, 5.118);
+    window.__timelines["sticker"] = tl;
+  </script>
+</template>

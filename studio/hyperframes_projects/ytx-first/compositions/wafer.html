@@ -1,0 +1,80 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: #16130f;
+      color: var(--color-paper, #f3efe6);
+      font-family: var(--font-body, "Roboto"), sans-serif;
+    }
+    .plate-clip { position: absolute; inset: 0; overflow: hidden; }
+    .mover { position: absolute; inset: 0; }
+    .mover img {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 116%;
+      height: 116%;
+      object-fit: cover;
+      object-position: left top;
+    }
+    .card {
+      position: absolute;
+      left: 192px;
+      bottom: 140px;
+      z-index: 3;
+      background: rgba(22, 19, 15, 0.86);
+      padding: 22px 28px 20px;
+    }
+    .num {
+      font-weight: 700;
+      font-size: 64px;
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+    }
+    .sub { margin-top: 8px; font-weight: 700; font-size: 36px; }
+    #wafer-tags {
+      position: absolute;
+      left: 192px;
+      right: 192px;
+      top: 140px;
+      z-index: 3;
+      display: flex;
+      justify-content: space-between;
+    }
+    .tag {
+      background: rgba(22, 19, 15, 0.86);
+      padding: 16px 22px;
+      font-weight: 700;
+      font-size: 36px;
+      line-height: 1.15;
+    }
+  </style>
+  <div id="root" data-composition-id="wafer" data-width="1920" data-height="1080">
+    <div id="wafer-plate" class="clip plate-clip" data-start="0" data-duration="4.85" data-track-index="0" data-layout-allow-overflow="true">
+      <div id="wafer-move" class="mover">
+        <img src="assets/wafer.jpg" alt="" />
+      </div>
+    </div>
+    <div id="split-plate" class="clip plate-clip" data-start="4.85" data-duration="6.544" data-track-index="0" data-layout-allow-overflow="true">
+      <div id="split-move" class="mover">
+        <img src="assets/split.jpg" alt="" />
+      </div>
+    </div>
+    <div id="wafer-card" class="clip card" data-start="0.2" data-duration="4.45" data-track-index="1" data-beat="one-wafer">
+      <div class="num">One wafer</div>
+      <div class="sub">This is where the memory starts</div>
+    </div>
+    <div id="wafer-tags" class="clip" data-start="5" data-duration="6.2" data-track-index="1" data-beat="three-times">
+      <div class="tag">Desktop DDR5<br />same memory</div>
+      <div class="tag">Three packages<br />about 3× the wafer</div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#wafer-move", { scale: 1, transformOrigin: "50% 52%" }, { scale: 1.04, duration: 4.7, ease: "power1.inOut" }, 0);
+    tl.fromTo("#split-move", { scale: 1, transformOrigin: "50% 50%" }, { scale: 1.04, duration: 6.39, ease: "power1.inOut" }, 4.85);
+    window.__timelines["wafer"] = tl;
+  </script>
+</template>

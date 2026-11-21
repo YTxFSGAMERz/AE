@@ -1,0 +1,62 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: #16130f;
+      color: var(--color-paper, #f3efe6);
+      font-family: var(--font-body, "Roboto"), sans-serif;
+    }
+    .plate-clip { position: absolute; inset: 0; overflow: hidden; }
+    .mover { position: absolute; inset: 0; }
+    .mover img {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 116%;
+      height: 116%;
+      object-fit: cover;
+      object-position: left top;
+    }
+    .card {
+      position: absolute;
+      left: 192px;
+      bottom: 140px;
+      z-index: 3;
+      background: rgba(22, 19, 15, 0.86);
+      padding: 22px 28px 20px;
+    }
+    .num {
+      font-weight: 700;
+      font-size: 72px;
+      line-height: 0.9;
+      letter-spacing: -0.03em;
+    }
+    .sub { margin-top: 8px; font-weight: 700; font-size: 36px; }
+  </style>
+  <div id="root" data-composition-id="chip" data-width="1920" data-height="1080">
+    <div id="chip-plate" class="clip plate-clip" data-start="0" data-duration="14.615" data-track-index="0" data-layout-allow-overflow="true">
+      <div id="chip-move" class="mover">
+        <img src="assets/chip.jpg" alt="" />
+      </div>
+    </div>
+    <div id="chip-then-card" class="clip card" data-start="4.55" data-duration="4.05" data-track-index="1" data-beat="contract-then">
+      <div class="num" data-var-text="chip-then">$8.70</div>
+      <div class="sub">Oct 2025 · 16Gb contract</div>
+    </div>
+    <div id="chip-now-card" class="clip card" data-start="8.75" data-duration="3.15" data-track-index="1" data-beat="contract-now">
+      <div class="num" data-var-text="chip-now">$48</div>
+      <div class="sub">Sep 2026 · same chip</div>
+    </div>
+    <div id="chip-x-card" class="clip card" data-start="12.05" data-duration="2.4" data-track-index="1" data-beat="five-times">
+      <div class="num">About 5.5×</div>
+      <div class="sub">The chip did not get slower</div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#chip-move", { scale: 1, transformOrigin: "50% 48%" }, { scale: 1.05, duration: 14.45, ease: "power1.inOut" }, 0);
+    window.__timelines["chip"] = tl;
+  </script>
+</template>

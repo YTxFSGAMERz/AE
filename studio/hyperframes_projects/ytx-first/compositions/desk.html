@@ -1,0 +1,67 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: #16130f;
+      color: var(--color-paper, #f3efe6);
+      font-family: var(--font-body, "Roboto"), sans-serif;
+    }
+    .plate-clip { position: absolute; inset: 0; overflow: hidden; }
+    .mover { position: absolute; inset: 0; }
+    .mover img {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 116%;
+      height: 116%;
+      object-fit: cover;
+      object-position: left top;
+    }
+    .card {
+      position: absolute;
+      left: 192px;
+      top: 120px;
+      z-index: 3;
+      background: rgba(22, 19, 15, 0.86);
+      padding: 22px 28px 20px;
+      max-width: 1100px;
+    }
+    .num {
+      font-weight: 700;
+      font-size: 56px;
+      line-height: 1;
+      letter-spacing: -0.02em;
+    }
+    #desk-end .num { font-size: 64px; letter-spacing: -0.03em; }
+    .rule {
+      margin-top: 12px;
+      width: 168px;
+      height: 6px;
+      background: #e07a2f;
+    }
+  </style>
+  <div id="root" data-composition-id="desk" data-width="1920" data-height="1080">
+    <div id="desk-plate" class="clip plate-clip" data-start="0" data-duration="5.959" data-track-index="0" data-layout-allow-overflow="true" data-hold="payoff">
+      <div id="desk-move" class="mover">
+        <img src="assets/desk.jpg" alt="" />
+      </div>
+    </div>
+    <div id="desk-a" class="clip card" data-start="0.1" data-duration="1.74" data-track-index="1" data-beat="claim">
+      <div class="num" data-var-text="claim-a">Your RAM did not get worse</div>
+    </div>
+    <div id="desk-b" class="clip card" data-start="1.88" data-duration="1.4" data-track-index="1" data-beat="payoff-line">
+      <div class="num" data-var-text="claim-b">The wafer left</div>
+    </div>
+    <div id="desk-end" class="clip card" data-start="3.36" data-duration="2.45" data-track-index="1" data-hold="endcard" data-beat="end">
+      <div class="num" data-var-text="channel">YTxFSGAMERz</div>
+      <div class="rule"></div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#desk-move", { scale: 1, transformOrigin: "58% 46%" }, { scale: 1.04, duration: 5.8, ease: "power1.inOut" }, 0);
+    window.__timelines["desk"] = tl;
+  </script>
+</template>
