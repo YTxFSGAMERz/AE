@@ -32,4 +32,20 @@ __pycache__/
 .gdrive_sync_cache.json
 .gdrive_cache*.json
 
+# Hyperframes Caches, Locks & Snapshots
+**/.hyperframes/artifacts/
+**/.hyperframes/cache/
+**/.hyperframes/preview/
+**/.thumbnails/
+**/*-lock
+
+
+# Model Weights and Large ML Assets (>100MB GitHub limit)
+*.onnx
+*.bin
+
+# Voice & TTS Audio Generation Caches
+**/assets/voice/cache/
+
+
 
